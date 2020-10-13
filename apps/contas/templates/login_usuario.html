@@ -1,0 +1,48 @@
+{% load staticfiles %}
+{% load widget_tweaks %}
+
+
+<head>
+    <title>GradeExata Login</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/signin.css' %}" rel="stylesheet">
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+</head>
+
+{%block body%}
+<body>
+<div class="container">
+    <form class="form-signin" method="post">
+        {% csrf_token %}
+        <h2 class="form-signin-heading">Por favor, faça login</h2>
+        {% if messages %}
+        {% if success %}
+        <div class="alert alert-danger" role="alert">
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-success" role="alert">
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endif %}
+        <label for="username" class="sr-only">Usuário</label>
+        <input type="text" id="username" name="username" class="form-control" placeholder="Informe o usuário" required
+               autofocus>
+        <label for="password" class="sr-only">Senha</label>
+        <input type="password" id="password" name="password" class="form-control" placeholder="Informe a senha"
+               required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Entrar</button>
+        <div class="row">
+            <div class="col-md-12 text-right">
+                <a href="">Esqueceu sua senha?</a>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+{% endblock body %}

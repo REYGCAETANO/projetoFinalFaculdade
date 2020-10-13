@@ -1,0 +1,77 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <title>{% block title %} GradeExada{% endblock title%}</title>
+  </head>
+
+  <body>
+    <h1>GradeExata</h1>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+       <div class="container">
+          <a class="navbar-brand" href="/">GradeExata</a>
+          {% if user.is_authenticated%}
+          <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'gradehoraria:listar_cursos' %}">Cursos <span class="sr-only">(atual)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'gradehoraria:listar_disciplinas' %}">Disciplinas</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'gradehoraria:listar_professores' %}">Professores</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'gradehoraria:listar_turmas' %}">Turmas</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'gradehoraria:listar_horarios' %}">Horários</a>
+              </li>
+            </ul>
+            <form class="form-inline my-2 my-md-0">
+              <input class="form-control" type="text" placeholder="" aria-label="Search">
+            </form>
+            <ul class="navbar-nav">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% if user.is_authenticated %}{{ user.get_full_name|default:user.username }}{% endif %}</a>
+                <div class="dropdown-menu" aria-labelledby="dropdown01">
+                  {% if user.is_staff %}
+                  <a class="dropdown-item" href="">Cadastrar novo usuário</a>
+                  <a class="dropdown-item" href="{% url 'contas:alterar_senha' %}">Alterar a senha</a>
+                  <a class="dropdown-item" href="">Editar Cadastro</a>
+                  <a class="dropdown-item" href="{% url 'contas:logout_usuario' %}">Sair</a>
+
+                  {% else %}
+                  <a class="dropdown-item" href="#">Alterar a senha</a>
+                  <a class="dropdown-item" href="#">Editar Cadastro</a>
+                  <a class="dropdown-item" href="{% url 'contas:logout_usuario' %}">Sair</a>
+                  {% endif %}
+                </div>
+              </li>
+            </ul>
+          </div>
+          {% endif %}
+      </div>
+    </nav>
+    {% block body %}
+
+    {% endblock body %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script>
+        $(document).on('click', '.confirm-delete', function() {
+          $('#confirmDeleteModal').attr('caller-id', $(this).attr('id'));
+        });
+        $(document).on('click', '#confirmDeleteButtonModal', function() {
+          var caller = $('#confirmDeleteButtonModal').closest('.modal').attr('caller-id');
+          window.location = $('#'.concat(caller)).attr('href');
+        });
+     </script>
+  </body>
+</html>

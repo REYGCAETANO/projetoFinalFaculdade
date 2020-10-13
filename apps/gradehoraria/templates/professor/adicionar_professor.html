@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+
+{% block title %}
+
+    Adicionar Professor - {{ block.super }}
+
+{% endblock title %}
+
+{% block body %}
+    <div class="container">
+        <h1>Professor</h1>
+        {% include 'partials/messages.html' %}
+        <div class="row">
+            <div class="col-md-12">
+                <form class="" action="." method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field|add_class:"form-control"|attr:"autofocus" }}
+                        {% if field.errors %}
+                            <div class="alert alert-danger" role="alert">{{ field.errors }}</div>
+                        {% endif %}
+                </div>
+
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock body %}

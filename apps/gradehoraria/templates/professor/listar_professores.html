@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <div class="container">
+        <h1>Professores</h1>
+        {% include 'partials/messages.html' %}
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Professor</th>
+                            <th>Matrícula</th>
+                            <th scope="col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in professores %}
+                            <tr>
+                                <td>{{ p.id_professor }}</td>
+                                <td>{{ p.nm_professor }}</td>
+                                <td>{{ p.matricula }}</td>
+                                <td>
+                                    <a href="{% url 'gradehoraria:editar_professor' p.id_professor %}" class="btn btn-info btn-sm">Editar</a>
+                                    <a href="{% url 'gradehoraria:deleta_professor' p.id_professor %}" class="btn btn-danger btn-sm confirm-delete" data-toggle="modal", data-target="#confirmDeleteModal" id="delete-{{ p.id_professor }}">Excluir</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{% url 'gradehoraria:adicionar_professor' %}" class="btn btn-primary" role="button">Adicionar Professor</a>
+            </div>
+        </div>
+        {% include 'partials/confirm_delete_modal.html' %}
+    </div>
+{% endblock body %}
