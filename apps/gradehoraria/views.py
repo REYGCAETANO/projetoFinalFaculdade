@@ -333,3 +333,138 @@ def editar_parametros(request, id_parametro):
 def listar_parametros(request):
     parametros = ParametrosGrade.objects.all()
     return render(request, 'grade/listar_parametros.html', {'parametros': parametros})
+
+
+class Gene():
+    def __init__(self, professor, horario, sala):
+        self.professor = professor
+        self.horario = horario
+        self.sala = sala
+
+
+class Individuo():
+    def __init__(self, tamanhoCromossomo, geracao=0):
+        self.tamanhoCromossomo = tamanhoCromossomo
+        self.notaAvaliacao = 0
+        self.geracao = geracao
+        self.cromossomo = []
+
+        for j in range(self.tamanhoCromossomo):
+            self.cromossomo.append(
+                Gene(random.randrange(1, 6), random.randrange(10, 100, 10), random.randrange(100, 1000, 100)))
+
+    def avaliacao(self):
+        nota = 0
+        for i, j in itertools.combinations(self.cromossomo, 2):
+            if i.horario == j.horario and i.professor == j.professor:
+                nota += 10
+            if i.sala == j.sala and i.horario == j.horario:
+                nota += 10
+        self.notaAvaliacao = nota
+
+    def crossover(self, other):
+        corte = random.randint(0, self.tamanhoCromossomo)
+        cromossomo1 = self.cromossomo[0:corte] + other.cromossomo[corte::]
+        cromossomo2 = other.cromossomo[0:corte] + self.cromossomo[corte::]
+        filho1 = Individuo(self.tamanhoCromossomo, self.geracao + 1)
+        filho1.cromossomo = cromossomo1
+        filho2 = Individuo(self.tamanhoCromossomo, self.geracao + 1)
+        filho2.cromossomo = cromossomo2
+        return [filho1, filho2]
+
+    def mutacao(self, cromossomo, taxaMutacao):
+        for i in range(self.tamanhoCromossomo):
+            if random.random() < taxaMutacao:
+                pos1 = round(random.random() * self.tamanhoCromossomo - 1)
+                pos2 = round(random.random() * self.tamanhoCromossomo - 1)
+                val1 = cromossomo[pos1]
+                val2 = cromossomo[pos2]
+                cromossomo[pos1] = val2
+                cromossomo[pos2] = val1
+        return self
+
+
+class AlgoritmoGenetico():
+    def __init__(self, tamanhoPopulacao):
+        self.tamanhoPopulacao = tamanhoPopulacao
+        self.populacao = []
+        self.geracao = 0
+        self.melhorSolucao = -1
+        self.ofertas = []
+
+    def inicializaPopulacao(self, tamanhoCromossomo):
+        for i in range(self.tamanhoPopulacao):
+            self.populacao.append(Individuo(tamanhoCromossomo))
+        self.melhorSolucao = self.populacao[0]
+
+    def avaliacao(self, populacao):
+        nota = 0
+
+        for p in populacao:
+            for i, j in itertools.combinations(p.cromossomo, 2):
+                if i.horario == j.horario and i.professor == j.professor:
+                    nota += 10
+                if i.sala == j.sala and i.horario == j.horario:
+                    nota += 10
+            p.notaAvaliacao = nota
+
+    #            if p.notaAvaliacao > 0:
+    #                print(p.notaAvaliacao)
+
+    def ordenaPopulacao(self):
+        self.populacao = sorted(self.populacao,
+                                key=lambda populacao: populacao.notaAvaliacao,
+                                reverse=False)
+
+    def melhorIndividuo(self, individuo):
+        if individuo.notaAvaliacao < self.melhorSolucao.notaAvaliacao:
+            self.melhorSolucao = individuo
+
+    def selecionaPai(self, populacao):
+        taxaPopulacao = int(self.tamanhoPopulacao * 0.5)
+        return populacao[0:taxaPopulacao]
+
+    def visualizaGeracao(self):
+        melhorSolucao = self.populacao[0]
+        print("G: %s -> Valor: %s" % (melhorSolucao.geracao,
+                                      melhorSolucao.notaAvaliacao))
+
+    def resolver(self, numeroGeracoes, tamanhoCromossomo, taxaMutacao):
+
+        self.inicializaPopulacao(tamanhoCromossomo)
+        self.avaliacao(self.populacao)
+        self.ordenaPopulacao()
+        # self.visualizaGeracao()
+
+        for geracao in range(numeroGeracoes):
+            pop_temp = self.selecionaPai(self.populacao)
+            self.populacao = []
+            for i in self.populacao:
+                i.geracao = i.geracao + 1
+
+            for i in range(0, self.tamanhoPopulacao, 2):
+                pais = random.choices(pop_temp, k=2)
+                self.populacao.extend(pais[0].crossover(pais[1]))
+
+            for i in self.populacao:
+                i.mutacao(i.cromossomo, taxaMutacao)
+
+            self.avaliacao(self.populacao)
+            self.ordenaPopulacao()
+            self.visualizaGeracao()
+            self.melhorIndividuo(self.populacao[0])
+            if self.melhorSolucao.notaAvaliacao == 0:
+                print("Melhor Solução -> G: %s Nota: %s Cromossomo: %s" %
+                      (self.melhorSolucao.geracao,
+                       self.melhorSolucao.notaAvaliacao,
+                       self.melhorSolucao.cromossomo))
+                return self.melhorSolucao.cromossomo
+
+
+@login_required(login_url='/contas/login')
+def gerarGradeHoraria(request):
+    parametros = ParametrosGrade.objects.get(pk=1)
+    ag = AlgoritmoGenetico(parametros.tamanhoPopulacao)
+    resultado = ag.resolver(parametros.numeroGeracoes, 12, parametros.taxaMutacao)
+
+    return render(request, 'grade/teste.html', {'resultado': resultado[0]})

@@ -37,6 +37,8 @@ urlpatterns = [
     path('parametros/listar/', views.listar_parametros, name='listar_parametros'),
     path('parametros/editar/<int:id_parametro>/', views.editar_parametros, name='editar_parametros'),
 
+    path('grade/teste/', views.gerarGradeHoraria, name='gerarGradeHoraria'),
+
     #path('', views.gradeHoraria, name='hello_world'),
     #path('', views.index, name='index'),
 ]
