@@ -25,10 +25,17 @@ urlpatterns = [
     path('turma/editar/<int:id_turma>/', views.editar_turma, name='editar_turma'),
     path('turma/excluir/<int:id_turma>/', views.deleta_turma, name='deleta_turma'),
 
+    path('oferta/adicionar/', views.adicionar_oferta, name='adicionar_oferta'),
+    path('oferta/listar/', views.listar_ofertas, name='listar_ofertas'),
+
     path('horarios', views.listar_horarios, name='listar_horarios'),
     path('horario/adicionar/', views.adicionar_horario, name='adicionar_horario'),
     path('horario/editar/<int:id_horario>/', views.editar_horario, name='editar_horario'),
     path('horario/excluir/<int:id_horario>/', views.deleta_horario, name='deleta_horario'),
+
+    path('parametros/adicionar/', views.adicionar_parametros, name='adicionar_parametros'),
+    path('parametros/listar/', views.listar_parametros, name='listar_parametros'),
+    path('parametros/editar/<int:id_parametro>/', views.editar_parametros, name='editar_parametros'),
 
     #path('', views.gradeHoraria, name='hello_world'),
     #path('', views.index, name='index'),

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Curso, Turma, Disciplina, Professor, Sala, Horario, Oferta, Grade, Gene
+from .models import Curso, Turma, Disciplina, Professor, Sala, Horario, Oferta, Gene
 
 
 def grade(modeladmin, request, queryset):
@@ -51,5 +51,4 @@ admin.site.register(Horario, HorarioAdmin)
 admin.site.register(Sala, SalaAdmin)
 admin.site.register(Professor, ProfessorAdmin)
 admin.site.register(Oferta, OfertaAdmin)
-admin.site.register(Grade, GradeAdmin)
 admin.site.register(Gene, GradeAdmin)

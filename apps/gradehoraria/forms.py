@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Professor, Horario, Sala, Curso, Turma, Disciplina, Oferta, Grade
+from .models import Professor, Horario, Sala, Curso, Turma, Disciplina, Oferta, Grade, ParametrosGrade
 
 
 class ProfessorForm(forms.ModelForm):
@@ -24,10 +24,12 @@ class SalaForm(forms.ModelForm):
         model = Sala
         fields = '__all__'
 
+
 class CursoForm(forms.ModelForm):
     class Meta:
         model = Curso
         fields = '__all__'
+
 
 class TurmaForm(forms.ModelForm):
     class Meta:
@@ -35,17 +37,26 @@ class TurmaForm(forms.ModelForm):
         fields = '__all__'
         #exclude = ['professor_id', 'disciplina_id']
 
+
 class DisciplinaForm(forms.ModelForm):
     class Meta:
         model = Disciplina
         fields = '__all__'
+
 
 class OfertaForm(forms.ModelForm):
     class Meta:
         model = Oferta
         fields = '__all__'
 
+
 class GradeForm(forms.ModelForm):
     class Meta:
         model = Grade
         fields = '__all__'
+
+
+class ParametrosGradeForm(forms.ModelForm):
+    class Meta:
+        model = ParametrosGrade
+        exclude = ('taxaMutacao',)

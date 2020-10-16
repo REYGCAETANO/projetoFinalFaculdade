@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block body %}
+    <div class="py-5 text-center">
+        <img class="d-block mx-auto mb-4" src="{% static 'img/clipboard.svg' %}" alt="" width="72" height="72">
+        <h2>Parâmetros de Geração</h2>
+    </div>
+    <div class="container">
+        {% include 'partials/messages.html' %}
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>População</th>
+                            <th>Qtd. máxima de tentativas</th>
+                            <th>Taxa de mutação</th>
+                            <th scope="col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in parametros %}
+                            <tr>
+                                <td>{{ p.tamanhoPopulacao }}</td>
+                                <td>{{ p.numeroGeracoes }}</td>
+                                <td>{{ p.taxaMutacao }}</td>
+                                <td>
+                                    <a href="{% url 'gradehoraria:editar_parametros' p.id_parametro %}" class="btn btn-info btn-sm">Editar</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{% url 'gradehoraria:adicionar_parametros' %}" class="btn btn-secondary" role="button">Gerar Grade</a>
+            </div>
+        </div>
+        {% include 'partials/confirm_delete_modal.html' %}
+    </div>
+{% endblock body %}

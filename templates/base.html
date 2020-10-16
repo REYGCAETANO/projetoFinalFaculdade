@@ -31,7 +31,13 @@
                 <a class="nav-link" href="{% url 'gradehoraria:listar_turmas' %}">Turmas</a>
               </li>
               <li class="nav-item">
+                <a class="nav-link" href="{% url 'gradehoraria:listar_ofertas' %}">Ofertas</a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link" href="{% url 'gradehoraria:listar_horarios' %}">Horários</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'gradehoraria:listar_parametros' %}">Parâmetros de geração</a>
               </li>
             </ul>
             <form class="form-inline my-2 my-md-0">
@@ -42,7 +48,7 @@
                 <a class="nav-link dropdown-toggle" href="" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% if user.is_authenticated %}{{ user.get_full_name|default:user.username }}{% endif %}</a>
                 <div class="dropdown-menu" aria-labelledby="dropdown01">
                   {% if user.is_staff %}
-                  <a class="dropdown-item" href="">Cadastrar novo usuário</a>
+                  <a class="dropdown-item" href="{% url 'contas:novo_usuario' %}">Cadastrar novo usuário</a>
                   <a class="dropdown-item" href="{% url 'contas:alterar_senha' %}">Alterar a senha</a>
                   <a class="dropdown-item" href="">Editar Cadastro</a>
                   <a class="dropdown-item" href="{% url 'contas:logout_usuario' %}">Sair</a>

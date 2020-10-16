@@ -22,7 +22,6 @@ urlpatterns = [
     path('contas/', include('contas.urls', namespace='contas')),
     path('', include('core.urls', namespace='core')),
 
-    #path('grade/', grade),
     #path('grade/', TemplateView.as_view(template_name='grade.html')),
     #path('cadastrarProfessor', TemplateView.as_view(template_name='professor.html')),
     #path('', TemplateView.as_view(template_name='home.html')),

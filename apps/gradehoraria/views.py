@@ -5,8 +5,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .forms import ProfessorForm, DisciplinaForm, CursoForm, TurmaForm, HorarioForm
-from .models import Grade, Disciplina, Curso, Professor, Turma, Horario
+from .forms import ProfessorForm, DisciplinaForm, CursoForm, TurmaForm, HorarioForm, OfertaForm, ParametrosGradeForm
+from .models import Disciplina, Curso, Professor, Turma, Horario, Oferta, ParametrosGrade
+
+import random
+import itertools
 
 
 # def index(request):
@@ -262,3 +265,71 @@ def editar_horario(request, id_horario):
     else:
         form = HorarioForm(instance=editar_turma)
         return render(request, 'horario/adicionar_horario.html', {'form': form})
+
+
+@login_required(login_url='/contas/login')
+def adicionar_oferta(request):
+    if request.method == 'POST':
+        form = OfertaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Oferta cadastrada com sucesso!')
+            return redirect('gradehoraria:adicionar_oferta')
+        else:
+            messages.error(request, 'Erro ao cadastrar oferta! Oferta já cadastrada')
+            return redirect('gradehoraria:listar_ofertas')
+    else:
+        if request.user.is_staff:
+            form = OfertaForm()
+            return render(request, 'oferta/adicionar_oferta.html', {'form': form})
+        else:
+            messages.error(request, 'Usuário sem permissão para cadastrar oferta!')
+            return redirect('gradehoraria:listar_ofertas')
+
+
+@login_required(login_url='/contas/login')
+def listar_ofertas(request):
+    ofertas = Oferta.objects.all()
+    return render(request, 'oferta/listar_ofertas.html', {'ofertas': ofertas})
+
+
+@login_required(login_url='/contas/login')
+def adicionar_parametros(request):
+    if request.method == 'POST':
+        form = ParametrosGradeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Parâmetro cadastrada com sucesso!')
+            return redirect('/')
+        else:
+            messages.error(request, 'Erro ao cadastrar oferta! Oferta já cadastrada')
+            return redirect('/')
+    else:
+        if request.user.is_staff:
+            form = ParametrosGradeForm()
+            return render(request, 'grade/cadastrar_parametros.html', {'form': form})
+        else:
+            messages.error(request, 'Usuário sem permissão para cadastrar parâmetro!')
+            return redirect('/')
+
+@login_required(login_url='/contas/login')
+def editar_parametros(request, id_parametro):
+    editar_parametro = get_object_or_404(ParametrosGrade, id_parametro=id_parametro)
+    if request.method == 'POST':
+        form = ParametrosGradeForm(request.POST, instance=editar_parametro)
+        if form.is_valid():
+            f = form.save(commit=False)
+            f.taxaMutacao = 0.5
+            f.save()
+            messages.success(request, 'Parâmetros alterados com sucesso!')
+            return redirect('gradehoraria:listar_parametros')
+        else:
+            messages.error(request, 'Erro ao alterar os parâmetros')
+    else:
+        form = ParametrosGradeForm(instance=editar_parametro)
+        return render(request, 'grade/cadastrar_parametros.html', {'form': form})
+
+@login_required(login_url='/contas/login')
+def listar_parametros(request):
+    parametros = ParametrosGrade.objects.all()
+    return render(request, 'grade/listar_parametros.html', {'parametros': parametros})
