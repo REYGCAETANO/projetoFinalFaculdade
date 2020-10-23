@@ -27,6 +27,8 @@ urlpatterns = [
 
     path('oferta/adicionar/', views.adicionar_oferta, name='adicionar_oferta'),
     path('oferta/listar/', views.listar_ofertas, name='listar_ofertas'),
+    path('oferta/editar/<int:id_oferta>/', views.editar_oferta, name='editar_oferta'),
+    path('oferta/excluir/<int:id_oferta>/', views.deleta_oferta, name='deleta_oferta'),
 
     path('horarios', views.listar_horarios, name='listar_horarios'),
     path('horario/adicionar/', views.adicionar_horario, name='adicionar_horario'),

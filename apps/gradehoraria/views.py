@@ -109,7 +109,7 @@ def listar_disciplinas(request):
 def deleta_disciplina(request, id_disciplina):
     if request.user.is_staff:
         deleteDisciplina = Disciplina.objects.get(id_disciplina=id_disciplina).delete()
-        messages.success(request, 'Disciplina excluída com sucesso!')
+        messages.warning(request, 'Disciplina excluída com sucesso!')
     else:
         messages.error(request, 'Você não pode excluir disciplinas.')
         return render(request, 'base.html')
@@ -202,7 +202,7 @@ def listar_turmas(request):
 @login_required(login_url='/contas/login')
 def deleta_turma(request, id_turma):
     deleteTurma = Turma.objects.get(id_turma=id_turma).delete()
-    messages.success(request, 'Turma excluida com sucesso!')
+    messages.warning(request, 'Turma excluída com sucesso!')
     return redirect('gradehoraria:listar_turmas')
 
 
@@ -248,7 +248,7 @@ def listar_horarios(request):
 @login_required(login_url='/contas/login')
 def deleta_horario(request, id_horario):
     deleteHorario = Horario.objects.get(id_horario=id_horario).delete()
-    messages.success(request, 'Horário excluido com sucesso!')
+    messages.warning(request, 'Horário excluido com sucesso!')
     return redirect('gradehoraria:listar_horarios')
 
 
@@ -275,7 +275,7 @@ def adicionar_oferta(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Oferta cadastrada com sucesso!')
-            return redirect('gradehoraria:adicionar_oferta')
+            return redirect('gradehoraria:listar_ofertas')
         else:
             messages.error(request, 'Erro ao cadastrar oferta! Oferta já cadastrada')
             return redirect('gradehoraria:listar_ofertas')
@@ -292,6 +292,30 @@ def adicionar_oferta(request):
 def listar_ofertas(request):
     ofertas = Oferta.objects.all()
     return render(request, 'oferta/listar_ofertas.html', {'ofertas': ofertas})
+
+
+@login_required(login_url='/contas/login')
+def editar_oferta(request, id_oferta):
+    id_oferta = get_object_or_404(Oferta, id_oferta=id_oferta)
+    if request.method == 'POST':
+        form = OfertaForm(request.POST, instance=id_oferta)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Dados da oferta alterados com sucesso!')
+            return redirect('gradehoraria:listar_ofertas')
+        else:
+            messages.error(request, 'Erro ao alterar dados da oferta!')
+            return redirect('gradehoraria:listar_ofertas')
+    else:
+        form = OfertaForm(instance=id_oferta)
+        return render(request, 'oferta/adicionar_oferta.html', {'form': form})
+
+
+@login_required(login_url='/contas/login')
+def deleta_oferta(request, id_oferta):
+    deleteOferta = Oferta.objects.get(id_oferta=id_oferta).delete()
+    messages.warning(request, 'Oferta excluída com sucesso!')
+    return redirect('gradehoraria:listar_ofertas')
 
 
 @login_required(login_url='/contas/login')
