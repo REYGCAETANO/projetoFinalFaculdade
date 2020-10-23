@@ -15,21 +15,7 @@
     <form class="form-signin" method="post">
         {% csrf_token %}
         <h2 class="form-signin-heading">Por favor, faça login</h2>
-        {% if messages %}
-        {% if success %}
-        <div class="alert alert-danger" role="alert">
-            {% for message in messages %}
-            {{ message }}
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="alert alert-success" role="alert">
-            {% for message in messages %}
-            {{ message }}
-            {% endfor %}
-        </div>
-        {% endif %}
-        {% endif %}
+        {% include 'partials/messages.html' %}
         <label for="username" class="sr-only">Usuário</label>
         <input type="text" id="username" name="username" class="form-control" placeholder="Informe o usuário" required
                autofocus>

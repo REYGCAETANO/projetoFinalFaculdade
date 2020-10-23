@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}
+
+    Gerar Grade - {{ block.super }}
+
+{% endblock title %}
+
+{% block body %}
+<div class="py-5 text-center">
+        <img class="d-block mx-auto mb-4" src="{% static 'img/clipboard.svg' %}" alt="" width="50" height="50">
+        <h2>Grade Horária</h2>
+</div>
+<div class="container">
+    {% include 'partials/messages.html' %}
+   <table class="table table-bordered">
+       <caption>Lista de horários</caption>
+       <thead class="thead-light">
+            <tr>
+              <th scope="col">Horário</th>
+              <th scope="col">Segunda-feira</th>
+              <th scope="col">Terça-feira</th>
+              <th scope="col">Quarta-feira</th>
+              <th scope="col">Quinta-feira</th>
+              <th scope="col">Sexta-feira</th>
+              <th scope="col">Sabádo</th>
+            </tr>
+       </thead>
+       <tbody>
+			<tr>
+                <th scope="row">1</th>
+                {% for field in resultado %}
+                    <td>
+                        Sala: {{ field.sala }} <br/>Horarário: {{ field.horario }}<br/>Professor: {{ field.professor }}
+                    </td>
+                    {%if forloop.counter == 6%}
+                        <tr/>
+                        <tr>
+                        <th scope="row">2</th>
+                    {%endif%}
+                    {% endfor %}
+            </tr>
+       </tbody>
+       <tfoot>
+       <td colspan="7">Foot 1</td>
+   </tfoot>
+   </table>
+</div>
+{% endblock body %}

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -21,7 +22,7 @@ def gradeHoraria(request):
 def grade(request, professor, horario, sala):
     template_name = 'grades/nova_grade.html'
 
-
+@staff_member_required(login_url='/')
 @login_required(login_url='/contas/login')
 def adicionar_professor(request):
     template_name = 'professor/adicionar_professor.html'
@@ -263,7 +264,7 @@ def editar_horario(request, id_horario):
         else:
             messages.error(request, 'Erro ao alterar dados do horário')
     else:
-        form = HorarioForm(instance=editar_turma)
+        form = HorarioForm(instance=editar_horario)
         return render(request, 'horario/adicionar_horario.html', {'form': form})
 
 
@@ -458,13 +459,22 @@ class AlgoritmoGenetico():
                       (self.melhorSolucao.geracao,
                        self.melhorSolucao.notaAvaliacao,
                        self.melhorSolucao.cromossomo))
-                return self.melhorSolucao.cromossomo
+                return self.melhorSolucao.cromossomo, self.melhorSolucao.geracao
 
 
+# FIXME: Criar exception para quando o tamanho do cromossomo for superior a quantidade de aulas na semana
+# FIXME: Carregar o tamanho do cromossomo da base de dados.
 @login_required(login_url='/contas/login')
 def gerarGradeHoraria(request):
-    parametros = ParametrosGrade.objects.get(pk=1)
-    ag = AlgoritmoGenetico(parametros.tamanhoPopulacao)
-    resultado = ag.resolver(parametros.numeroGeracoes, 12, parametros.taxaMutacao)
 
-    return render(request, 'grade/teste.html', {'resultado': resultado[0]})
+    try:
+        parametros = ParametrosGrade.objects.get(pk=1)
+        horarios = Horario.objects.all
+        ag = AlgoritmoGenetico(parametros.tamanhoPopulacao)
+
+        resultado = ag.resolver(parametros.numeroGeracoes, 12, parametros.taxaMutacao)
+        erro = '0'
+        return render(request, 'grade/gerar_grade.html', {'resultado': resultado[0], 'horarios': horarios})
+    except:
+        messages.error(request, 'Solução não encontrada! Tente novamente ou altere os parâmetros de geração!')
+        return redirect('gradehoraria:listar_parametros')

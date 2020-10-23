@@ -7,9 +7,10 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class NovoUsuarioForm(UserCreationForm):
-    first_name = forms.CharField(max_length=50, label='Nome')
-    last_name = forms.CharField(max_length=50, label='Sobrenome')
+    #first_name = forms.CharField(max_length=50, label='Nome')
+    #last_name = forms.CharField(max_length=50, label='Sobrenome')
     email = forms.EmailField(label='E-mail')
+
 
     def clean_email(self):
 

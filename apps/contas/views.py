@@ -11,18 +11,21 @@ from .forms import NovoUsuarioForm
 
 @login_required(login_url='/contas/login')
 def novo_usuario(request):
-    #template_name = 'contas/novo_usuario.html'
-    form = NovoUsuarioForm(request.POST)
+    template_name = 'novo-usuario.html'
     if request.method == 'POST':
+        form = NovoUsuarioForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Usuário cadastrado com sucesso!')
-            return redirect('contas:novo_usuario')
+            return redirect('novo_usuario')
         else:
             messages.warning(request, 'Por favor, corrija os erros abaixo!')
     else:
         form = NovoUsuarioForm()
-        return render(request, 'novo-usuario.html', {'form': form})
+    context = {
+        'form': form
+    }
+    return render(request, template_name, context)
 
 
 def login_usuario(request):
@@ -57,7 +60,7 @@ def alterar_senha(request):
             messages.success(request, 'Senha alterada com sucesso!')
             return redirect('contas:alterar_senha')
         else:
-            messages.error(request, 'Não foi possível alterar a senha.')
+            messages.error(request, 'Não foi possível alterar a senha. Por favor, corrija os erros e tente novamente')
     else:
         form = PasswordChangeForm(request.user)
     context = {

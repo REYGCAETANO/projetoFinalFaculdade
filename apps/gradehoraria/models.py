@@ -22,7 +22,6 @@ class Professor(models.Model):
     nm_professor = models.CharField(max_length=100, verbose_name='Nome', unique=True)
     matricula = models.CharField(max_length=50, verbose_name='Matrícula', unique=True)
     disciplinas = models.ManyToManyField(Disciplina, related_name='professor_disciplina', verbose_name='Disciplina')
-    #user = models.ForeignKey(User, on_delete=models.CASCADE)
     # turno = models.CharField(max_length=20, verbose_name='Turno', choices=TURNO_CHOICES)
 
     def save(self, force_insert=False, force_update=False):
@@ -40,36 +39,34 @@ class Professor(models.Model):
 
 class Horario(models.Model):
     SEMANA_CHOICES = (
-        ('1', 'Domingo-Feira'),
-        ('2', 'Segunda-Feira'),
-        ('3', 'Terça-Feira'),
-        ('4', 'Quarta-Feira'),
-        ('5', 'Quinta-Feira'),
-        ('6', 'Sexta-Feira'),
-        ('7', 'Sábado'),
+        (1, 'Domingo-Feira'),
+        (2, 'Segunda-Feira'),
+        (3, 'Terça-Feira'),
+        (4, 'Quarta-Feira'),
+        (5, 'Quinta-Feira'),
+        (6, 'Sexta-Feira'),
+        (7, 'Sábado'),
     )
     HORARIO_CHOICES = (
-        (1, '19:20 às 20:50'),
-        (2, '21:10 às 22:50'),
-        (3, '08:20 às 10:50'),
-        (4, '11:10 às 12:40'),
+        (1, '08:20 às 10:50'),
+        (2, '11:10 às 12:40'),
+        (3, '19:20 às 20:50'),
+        (4, '21:10 às 22:50'),
     )
     TURNO_CHOICES = (
-        ('1', 'Matutino'),
-        ('2', 'Vespertino'),
-        ('3', 'Noturno'),
+        (1, 'Matutino'),
+        (2, 'Noturno'),
     )
     id_horario = models.AutoField(primary_key=True)
-    dia_semana = models.CharField(max_length=20, verbose_name='Dia da semana', choices=SEMANA_CHOICES)
+    dia_semana = models.IntegerField(verbose_name='Dia da semana', choices=SEMANA_CHOICES)
     horario = models.IntegerField(verbose_name='Horario', choices=HORARIO_CHOICES)
-    turno = models.CharField(max_length=20, verbose_name='Turno', choices=TURNO_CHOICES)
-
+    turno = models.IntegerField(verbose_name='Turno', choices=TURNO_CHOICES)
     #def __str__(self):
      #   return self.get_dia_semana_display()
 
     class Meta:
         verbose_name_plural = 'Horários'
-        unique_together = ['dia_semana', 'horario', 'turno']
+        unique_together = ['dia_semana', 'turno', 'horario']
 
 
 class Sala(models.Model):
