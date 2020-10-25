@@ -6,21 +6,12 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .forms import ProfessorForm, DisciplinaForm, CursoForm, TurmaForm, HorarioForm, OfertaForm, ParametrosGradeForm
-from .models import Disciplina, Curso, Professor, Turma, Horario, Oferta, ParametrosGrade
+from .forms import ProfessorForm, DisciplinaForm, CursoForm, TurmaForm, HorarioForm, SalaForm, OfertaForm, ParametrosGradeForm, GeneForm
+from .models import Disciplina, Curso, Professor, Turma, Horario, Sala, Oferta, ParametrosGrade, Gene
 
 import random
 import itertools
 
-
-# def index(request):
-#     return HttpResponse("Hello, world. You're at the polls index.")
-def gradeHoraria(request):
-    return render(request, 'gradehoraria.html', {})
-
-
-def grade(request, professor, horario, sala):
-    template_name = 'grades/nova_grade.html'
 
 @staff_member_required(login_url='/')
 @login_required(login_url='/contas/login')
@@ -223,6 +214,55 @@ def editar_turma(request, id_turma):
 
 
 
+
+
+
+@login_required(login_url='/contas/login')
+def adicionar_sala(request):
+    if request.method == 'POST':
+        form = SalaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Sala cadastrada com sucesso!')
+            return redirect('gradehoraria:listar_salas')
+        else:
+            messages.error(request, 'Erro ao cadastrar sala!')
+    else:
+        form = SalaForm()
+    return render(request, 'sala/adicionar_sala.html', {'form': form})
+
+
+@login_required(login_url='/contas/login')
+def listar_sala(request):
+    salas = Sala.objects.all()
+    return render(request, 'sala/listar_sala.html', {'salas': salas})
+
+
+# FIXME: Criar confirmação de exclusão antes de persistir no banco - OK
+@login_required(login_url='/contas/login')
+def deleta_sala(request, id_sala):
+    deleteSala = Sala.objects.get(id_sala=id_sala).delete()
+    messages.warning(request, 'Sala excluída com sucesso!')
+    return redirect('gradehoraria:listar_salas')
+
+
+@login_required(login_url='/contas/login')
+def editar_sala(request, id_sala):
+    editar_sala = get_object_or_404(Sala, id_sala=id_sala)
+    if request.method == 'POST':
+        form = SalaForm(request.POST, instance=editar_sala)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Dados da sala alterado com sucesso!')
+            return redirect('gradehoraria:listar_salas')
+        else:
+            messages.error(request, 'Erro ao alterar dados da sala')
+    else:
+        form = SalaForm(instance=editar_sala)
+        return render(request, 'turma/adicionar_sala.html', {'form': form})
+
+
+
 @login_required(login_url='/contas/login')
 def adicionar_horario(request):
     if request.method == 'POST':
@@ -327,7 +367,7 @@ def adicionar_parametros(request):
             messages.success(request, 'Parâmetro cadastrada com sucesso!')
             return redirect('/')
         else:
-            messages.error(request, 'Erro ao cadastrar oferta! Oferta já cadastrada')
+            messages.error(request, 'Erro ao cadastrar parâmetro! ')
             return redirect('/')
     else:
         if request.user.is_staff:
@@ -360,7 +400,7 @@ def listar_parametros(request):
     return render(request, 'grade/listar_parametros.html', {'parametros': parametros})
 
 
-class Gene():
+class Geneg():
     def __init__(self, professor, horario, sala):
         self.professor = professor
         self.horario = horario
@@ -368,6 +408,11 @@ class Gene():
 
 
 class Individuo():
+
+    professores = Professor.objects.count()
+    horarios =  Horario.objects.count()
+    #salas =  Salas.objects.all
+
     def __init__(self, tamanhoCromossomo, geracao=0):
         self.tamanhoCromossomo = tamanhoCromossomo
         self.notaAvaliacao = 0
@@ -376,7 +421,7 @@ class Individuo():
 
         for j in range(self.tamanhoCromossomo):
             self.cromossomo.append(
-                Gene(random.randrange(1, 6), random.randrange(10, 100, 10), random.randrange(100, 1000, 100)))
+                Geneg(random.randrange(1, self.professores), random.randrange(1, self.horarios), random.randrange(100, 1000, 100)))
 
     def avaliacao(self):
         nota = 0
@@ -493,12 +538,11 @@ def gerarGradeHoraria(request):
 
     try:
         parametros = ParametrosGrade.objects.get(pk=1)
-        horarios = Horario.objects.all
+        professores = Professor.objects.prefetch_related('disciplinas')
         ag = AlgoritmoGenetico(parametros.tamanhoPopulacao)
-
         resultado = ag.resolver(parametros.numeroGeracoes, 12, parametros.taxaMutacao)
-        erro = '0'
-        return render(request, 'grade/gerar_grade.html', {'resultado': resultado[0], 'horarios': horarios})
-    except:
-        messages.error(request, 'Solução não encontrada! Tente novamente ou altere os parâmetros de geração!')
+
+        return render(request, 'grade/gerar_grade.html', {'resultado': resultado[0]})
+    except Exception as e:
+        messages.error(request, e)
         return redirect('gradehoraria:listar_parametros')

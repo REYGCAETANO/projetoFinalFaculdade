@@ -28,14 +28,19 @@ class Professor(models.Model):
         self.nm_professor = self.nm_professor.upper()
         super(Professor, self).save(force_insert, force_update)
 
+    def __str__(self):
+        return "%s (%s)" % (
+            self.nm_professor,
+            ", ".join(disciplinas.sigla_disciplina for disciplinas in self.disciplinas.all()),
+        )
     class Meta:
         unique_together = ('matricula',)
         verbose_name = 'Professor'
         verbose_name_plural = 'Professores'
     '''def __str__(self):
         return "%s (%s)" % (self.nm_professor, ", ".join(disciplina.nm_disciplina for disciplina in self.disciplinas.all()))'''
-    def __str__(self):
-        return self.nm_professor
+    #def __str__(self):
+    #    return self.nm_professor
 
 class Horario(models.Model):
     SEMANA_CHOICES = (

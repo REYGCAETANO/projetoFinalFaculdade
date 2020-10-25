@@ -23,7 +23,11 @@ urlpatterns = [
     path('turmas', views.listar_turmas, name='listar_turmas'),
     path('turma/adicionar/', views.adicionar_turma, name='adicionar_turma'),
     path('turma/editar/<int:id_turma>/', views.editar_turma, name='editar_turma'),
-    path('turma/excluir/<int:id_turma>/', views.deleta_turma, name='deleta_turma'),
+    path('turma/excluir/<int:id_turma>/', views.deleta_turma, name='deleta_turma'),  path('turmas', views.listar_turmas, name='listar_turmas'),
+
+    path('sala/adicionar/', views.adicionar_sala, name='adicionar_turma'),
+    path('sala/editar/<int:id_sala>/', views.editar_sala, name='editar_sala'),
+    path('sala/excluir/<int:id_sala>/', views.deleta_sala, name='deleta_sala'),
 
     path('oferta/adicionar/', views.adicionar_oferta, name='adicionar_oferta'),
     path('oferta/listar/', views.listar_ofertas, name='listar_ofertas'),

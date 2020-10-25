@@ -1,16 +1,21 @@
 from django import forms
 
-from .models import Professor, Horario, Sala, Curso, Turma, Disciplina, Oferta, Grade, ParametrosGrade
+from .models import Professor, Horario, Sala, Curso, Turma, Disciplina, Oferta, Grade, ParametrosGrade, Gene
 
 
 class ProfessorForm(forms.ModelForm):
     # turno = forms.CharField(label="Turno", required=True)
     # disponibilidade = forms.CharField(label="disponibilidade", required=False)
 
+    def listar_disciplinas(self, obj):
+        return ", ".join(c.sigla_disciplina for c in obj.disciplinas.all())
+
+    listar_disciplinas.short_description = "Disciplinas"
+
     class Meta:
         model = Professor
-        # fields = ['nm_professor', 'matricula']
-        fields = '__all__'
+        fields = ('nm_professor', 'matricula', 'disciplinas')
+        #fields = '__all__'
 
 
 class HorarioForm(forms.ModelForm):
@@ -60,3 +65,9 @@ class ParametrosGradeForm(forms.ModelForm):
     class Meta:
         model = ParametrosGrade
         exclude = ('taxaMutacao',)
+
+
+class GeneForm(forms.ModelForm):
+    class Meta:
+        model = Gene
+        fields = '__all__'
