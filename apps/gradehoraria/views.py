@@ -233,9 +233,9 @@ def adicionar_sala(request):
 
 
 @login_required(login_url='/contas/login')
-def listar_sala(request):
+def listar_salas(request):
     salas = Sala.objects.all()
-    return render(request, 'sala/listar_sala.html', {'salas': salas})
+    return render(request, 'sala/listar_salas.html', {'salas': salas})
 
 
 # FIXME: Criar confirmação de exclusão antes de persistir no banco - OK
@@ -541,6 +541,15 @@ def gerarGradeHoraria(request):
         professores = Professor.objects.prefetch_related('disciplinas')
         ag = AlgoritmoGenetico(parametros.tamanhoPopulacao)
         resultado = ag.resolver(parametros.numeroGeracoes, 12, parametros.taxaMutacao)
+
+        gene = Gene.objects.select_related('cd_professor').select_related('cd_horario').select_related('cd_sala')
+        #for gene in resultado[0]:
+
+        g = Gene.objects.create(cd_professor=Professor.objects.get(id_professor=25),
+                                cd_horario=Horario.objects.get(id_horario=15),
+                                cd_sala=Sala, oferta=5)
+        g.save
+
 
         return render(request, 'grade/gerar_grade.html', {'resultado': resultado[0]})
     except Exception as e:
