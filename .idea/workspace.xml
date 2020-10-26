@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ce93807-f917-4348-8244-7607f2e52bc6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/apps/gradehoraria/templates/sala/listar_salas.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/gradehoraria/templates/sala/listar_salas.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/gradehoraria/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/gradehoraria/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/gradehoraria/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/gradehoraria/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/gradehoraria/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/gradehoraria/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -19,12 +19,12 @@
     <favorites_list name="PROJETO_FINAL_TCC" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file pinned="false" current-in-tab="false">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/apps/gradehoraria/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="79" column="9" selection-start-line="79" selection-start-column="4" selection-end-line="79" selection-end-column="9" />
+            <state relative-caret-position="232">
+              <caret line="160" column="67" selection-start-line="160" selection-start-column="67" selection-end-line="160" selection-end-column="67" />
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
@@ -35,8 +35,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/apps/gradehoraria/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="237" column="45" selection-start-line="237" selection-start-column="45" selection-end-line="237" selection-end-column="45" />
+            <state relative-caret-position="3326">
+              <caret line="553" column="130" selection-start-line="553" selection-start-column="130" selection-end-line="553" selection-end-column="130" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
               </folding>
@@ -45,40 +45,22 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/apps/gradehoraria/urls.py">
+        <entry file="file://$PROJECT_DIR$/apps/gradehoraria/forms.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="24">
-              <caret line="28" column="70" selection-start-line="28" selection-start-column="70" selection-end-line="28" selection-end-column="70" />
+            <state relative-caret-position="-451">
+              <caret line="26" column="14" selection-start-line="26" selection-start-column="6" selection-end-line="26" selection-end-column="14" />
               <folding>
-                <element signature="e#0#28#0" expanded="true" />
+                <element signature="e#0#24#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/sala/listar_salas.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="31" column="118" selection-start-line="31" selection-start-column="118" selection-end-line="31" selection-end-column="118" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/base.html">
+        <entry file="file://$USER_HOME$/Anaconda3/Lib/site-packages/django/db/models/manager.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="284">
-              <caret line="33" column="86" selection-start-line="33" selection-start-column="86" selection-end-line="33" selection-end-column="86" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/apps/gradehoraria/forms.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-221">
-              <caret line="2" column="44" selection-start-line="2" selection-start-column="40" selection-end-line="2" selection-end-column="44" />
+            <state relative-caret-position="2873">
+              <caret line="174" selection-start-line="174" selection-end-line="174" />
             </state>
           </provider>
         </entry>
@@ -86,8 +68,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/grade/gerar_grade.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="194">
+            <state relative-caret-position="449">
               <caret line="35" column="114" selection-start-line="35" selection-start-column="114" selection-end-line="35" selection-end-column="114" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/grade/listar_parametros.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-102">
+              <caret line="6" column="62" selection-start-line="6" selection-start-column="62" selection-end-line="6" selection-end-column="62" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/grade/cadastrar_parametros.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-374">
+              <caret line="2" selection-start-line="2" selection-end-line="2" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -122,6 +122,7 @@
       <find>excluida</find>
       <find>Individuo</find>
       <find>OFERTA</find>
+      <find>professor</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -175,13 +176,13 @@
         <option value="$PROJECT_DIR$/apps/gradehoraria/templates/oferta/listar_ofertas.html" />
         <option value="$PROJECT_DIR$/apps/gradehoraria/templates/professor/listar_professores.html" />
         <option value="$PROJECT_DIR$/apps/gradehoraria/forms.py" />
-        <option value="$PROJECT_DIR$/apps/gradehoraria/models.py" />
         <option value="$PROJECT_DIR$/apps/gradehoraria/templates/grade/gerar_grade.html" />
         <option value="$PROJECT_DIR$/apps/gradehoraria/templates/sala/adicionar_sala.html" />
         <option value="$PROJECT_DIR$/templates/base.html" />
-        <option value="$PROJECT_DIR$/apps/gradehoraria/views.py" />
         <option value="$PROJECT_DIR$/apps/gradehoraria/urls.py" />
         <option value="$PROJECT_DIR$/apps/gradehoraria/templates/sala/listar_salas.html" />
+        <option value="$PROJECT_DIR$/apps/gradehoraria/views.py" />
+        <option value="$PROJECT_DIR$/apps/gradehoraria/models.py" />
       </list>
     </option>
   </component>
@@ -197,7 +198,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -229,7 +229,7 @@
               <item name="apps" type="462c0819:PsiDirectoryNode" />
               <item name="gradehoraria" type="462c0819:PsiDirectoryNode" />
               <item name="templates" type="462c0819:PsiDirectoryNode" />
-              <item name="sala" type="462c0819:PsiDirectoryNode" />
+              <item name="grade" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="PROJETO_FINAL_TCC" type="b2602c69:ProjectViewProjectNode" />
@@ -244,6 +244,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -478,8 +479,8 @@
       <window_info anchor="bottom" id="Message" order="2" />
       <window_info anchor="bottom" id="Find" order="3" sideWeight="0.4955357" weight="0.41898528" />
       <window_info anchor="bottom" x="11" y="276" width="1344" height="175" id="Terminal" order="4" sideWeight="0.4858631" weight="0.497545" />
-      <window_info anchor="bottom" id="Run" order="5" sideWeight="0.75446427" visible="true" weight="0.3420622" />
-      <window_info anchor="bottom" id="Debug" order="6" sideWeight="0.42485118" weight="0.27332243" />
+      <window_info anchor="bottom" id="Run" order="5" sideWeight="0.75446427" visible="true" weight="0.29623568" />
+      <window_info anchor="bottom" id="Debug" order="6" sideWeight="0.42485118" weight="0.62356794" />
       <window_info anchor="bottom" id="Cvs" order="7" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="8" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="9" show_stripe_button="false" sideWeight="0.4985119" weight="0.32569557" />
@@ -535,16 +536,26 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/apps/gradehoraria/views.py</url>
-          <line>554</line>
+          <line>566</line>
           <option name="timeStamp" value="20" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/apps/gradehoraria/views.py</url>
-          <line>553</line>
+          <line>565</line>
           <option name="timeStamp" value="21" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="g.oferta._meta.REVERSE_PROPERTIES" />
+        <watch expression="g.oferta._meta._relation_tree[0]._related_fields[0][1].many_to_many" />
+        <watch expression="g.oferta.DoesNotExist" />
+        <watch expression="g.oferta._meta.concrete_fields.3._related_fields" />
+        <watch expression="g.oferta._meta.concrete_fields.3._related_fields" />
+        <watch expression="g.oferta._meta.concrete_fields.3._related_fields[0][1].model" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$USER_HOME$/Anaconda3/Lib/site-packages/django/core/handlers/wsgi.py">
@@ -571,27 +582,6 @@
     <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/horario/adicionar_horario.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-204" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/horario/listar_horarios.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="37" column="10" selection-start-line="37" selection-start-column="10" selection-end-line="37" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/grade/cadastrar_parametros.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" selection-start-line="2" selection-end-line="2" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/grade/listar_parametros.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="62" selection-start-line="6" selection-start-column="62" selection-end-line="6" selection-end-column="62" />
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/apps/core/models.py">
@@ -834,22 +824,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-221">
-          <caret line="2" column="44" selection-start-line="2" selection-start-column="40" selection-end-line="2" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/sala/listar_turmas.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/sala/listar_turmas.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/sala/adicionar_turma.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/sala/listar_turmas.html" />
+    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/sala/listar_turmas.html" />
+    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/sala/adicionar_turma.html" />
     <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/sala/adicionar_sala.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="273">
@@ -857,44 +834,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Anaconda3/Lib/site-packages/django/db/models/manager.py">
+    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/sala/listar_salas.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="81" selection-start-line="81" selection-end-line="81" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/base.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="284">
-          <caret line="33" column="86" selection-start-line="33" selection-start-column="86" selection-end-line="33" selection-end-column="86" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/grade/gerar_grade.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="35" column="114" selection-start-line="35" selection-start-column="114" selection-end-line="35" selection-end-column="114" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="79" column="9" selection-start-line="79" selection-start-column="4" selection-end-line="79" selection-end-column="9" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="237" column="45" selection-start-line="237" selection-start-column="45" selection-end-line="237" selection-end-column="45" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="153">
+          <caret line="31" column="118" selection-start-line="31" selection-start-column="118" selection-end-line="31" selection-end-column="118" />
         </state>
       </provider>
     </entry>
@@ -908,10 +851,75 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/sala/listar_salas.html">
+    <entry file="file://$USER_HOME$/Anaconda3/Lib/site-packages/django/db/models/manager.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="31" column="118" selection-start-line="31" selection-start-column="118" selection-end-line="31" selection-end-column="118" />
+        <state relative-caret-position="2873">
+          <caret line="174" selection-start-line="174" selection-end-line="174" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/horario/listar_horarios.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="26" column="137" lean-forward="true" selection-start-line="26" selection-start-column="36" selection-end-line="26" selection-end-column="137" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/base.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-175">
+          <caret line="33" column="86" selection-start-line="33" selection-start-column="86" selection-end-line="33" selection-end-column="86" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/grade/gerar_grade.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="449">
+          <caret line="35" column="114" selection-start-line="35" selection-start-column="114" selection-end-line="35" selection-end-column="114" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/grade/listar_parametros.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-102">
+          <caret line="6" column="62" selection-start-line="6" selection-start-column="62" selection-end-line="6" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/templates/grade/cadastrar_parametros.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-374">
+          <caret line="2" selection-start-line="2" selection-end-line="2" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3326">
+          <caret line="553" column="130" selection-start-line="553" selection-start-column="130" selection-end-line="553" selection-end-column="130" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-451">
+          <caret line="26" column="14" selection-start-line="26" selection-start-column="6" selection-end-line="26" selection-end-column="14" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="232">
+          <caret line="160" column="67" selection-start-line="160" selection-start-column="67" selection-end-line="160" selection-end-column="67" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

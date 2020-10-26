@@ -262,7 +262,6 @@ def editar_sala(request, id_sala):
         return render(request, 'turma/adicionar_sala.html', {'form': form})
 
 
-
 @login_required(login_url='/contas/login')
 def adicionar_horario(request):
     if request.method == 'POST':
@@ -410,8 +409,8 @@ class Geneg():
 class Individuo():
 
     professores = Professor.objects.count()
-    horarios =  Horario.objects.count()
-    #salas =  Salas.objects.all
+    horarios = Horario.objects.count()
+    salas = Sala.objects.count()
 
     def __init__(self, tamanhoCromossomo, geracao=0):
         self.tamanhoCromossomo = tamanhoCromossomo
@@ -421,7 +420,7 @@ class Individuo():
 
         for j in range(self.tamanhoCromossomo):
             self.cromossomo.append(
-                Geneg(random.randrange(1, self.professores), random.randrange(1, self.horarios), random.randrange(100, 1000, 100)))
+                Geneg(random.randrange(1, self.professores), random.randrange(1, self.horarios), random.randrange(1, self.salas)))
 
     def avaliacao(self):
         nota = 0
@@ -542,13 +541,26 @@ def gerarGradeHoraria(request):
         ag = AlgoritmoGenetico(parametros.tamanhoPopulacao)
         resultado = ag.resolver(parametros.numeroGeracoes, 12, parametros.taxaMutacao)
 
-        gene = Gene.objects.select_related('cd_professor').select_related('cd_horario').select_related('cd_sala')
+        #gene = Gene.objects.select_related('cd_professor').select_related('cd_horario').select_related('cd_sala')
         #for gene in resultado[0]:
+        #qtdProf = Professor.objects.prefetch_related('disciplinas').get(disciplinas=3, id_professor=resul)
+        #resul =random.choice(qtdProf)
+        professor = random.choices(Professor.objects.prefetch_related('disciplinas').filter(disciplinas=7))
 
-        g = Gene.objects.create(cd_professor=Professor.objects.get(id_professor=25),
+        g = Gene.objects.create(cd_professor=Professor.objects.prefetch_related('disciplinas').get(disciplinas=7, id_professor=professor[0].id_professor),
+                               #(cd_professor=Professor.objects.get(id_professor=25),
                                 cd_horario=Horario.objects.get(id_horario=15),
-                                cd_sala=Sala, oferta=5)
+                                cd_sala=Sala.objects.get(id_sala=5),
+                                oferta=Oferta.objects.select_related('disciplina').prefetch_related('disciplina').get(disciplina=7))
+        
         g.save
+
+        #cd_professor = Professor.objects.prefetch_related('disciplinas').get(id_disciplinas=4)
+        professorr = random.choices(Professor.objects.prefetch_related('disciplinas').filter(disciplinas=2))
+        oferta = Oferta.objects.select_related('disciplina').prefetch_related('disciplina').get(disciplina=2)
+
+        print(professorr[0].id_professor)
+        print('Oferta' + ' ' + str(oferta.id_oferta))
 
 
         return render(request, 'grade/gerar_grade.html', {'resultado': resultado[0]})

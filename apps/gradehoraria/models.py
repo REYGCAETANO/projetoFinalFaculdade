@@ -29,10 +29,14 @@ class Professor(models.Model):
         super(Professor, self).save(force_insert, force_update)
 
     def __str__(self):
+        nome = str(self.nm_professor).strip().split()
+        return nome[0] + ' ' + nome[len(nome)-1]
+    
+    '''def __str__(self):
         return "%s (%s)" % (
             self.nm_professor,
             ", ".join(disciplinas.sigla_disciplina for disciplinas in self.disciplinas.all()),
-        )
+        )'''
     class Meta:
         unique_together = ('matricula',)
         verbose_name = 'Professor'
@@ -134,7 +138,7 @@ class Oferta(models.Model):
         return self.turma.ds_turma
 
     class Meta:
-        unique_together = ['curso','turma', 'disciplina']
+        unique_together = ['curso', 'turma', 'disciplina']
 
 
 class Gene(models.Model):
