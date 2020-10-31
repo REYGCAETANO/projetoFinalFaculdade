@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ce93807-f917-4348-8244-7607f2e52bc6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/apps/gradehoraria/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/gradehoraria/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/gradehoraria/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/gradehoraria/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,11 +30,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/apps/gradehoraria/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="427" column="46" lean-forward="true" selection-start-line="425" selection-start-column="5" selection-end-line="427" selection-end-column="46" />
+            <state relative-caret-position="142">
+              <caret line="359" column="34" selection-start-line="359" selection-start-column="34" selection-end-line="359" selection-end-column="34" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
               </folding>
@@ -68,10 +68,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/apps/gradehoraria/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
+            <state relative-caret-position="260">
               <caret line="35" column="87" selection-start-line="35" selection-start-column="87" selection-end-line="35" selection-end-column="87" />
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
@@ -180,8 +180,8 @@
         <option value="$PROJECT_DIR$/apps/gradehoraria/models.py" />
         <option value="$PROJECT_DIR$/apps/gradehoraria/forms.py" />
         <option value="$PROJECT_DIR$/apps/gradehoraria/admin.py" />
-        <option value="$PROJECT_DIR$/apps/gradehoraria/views.py" />
         <option value="$PROJECT_DIR$/apps/gradehoraria/urls.py" />
+        <option value="$PROJECT_DIR$/apps/gradehoraria/views.py" />
       </list>
     </option>
   </component>
@@ -461,14 +461,14 @@
     <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" sideWeight="0.44625407" side_tool="true" weight="0.1845238" />
-      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.5537459" visible="true" weight="0.25297618" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.5537459" weight="0.25297618" />
       <window_info id="Structure" order="2" sideWeight="0.44618833" side_tool="true" weight="0.1845238" />
       <window_info anchor="bottom" id="Version Control" order="0" sideWeight="0.49925596" weight="0.3289689" />
       <window_info anchor="bottom" id="Event Log" order="1" sideWeight="0.5126488" side_tool="true" weight="0.5400982" />
       <window_info anchor="bottom" id="Message" order="2" />
       <window_info anchor="bottom" id="Find" order="3" sideWeight="0.4955357" weight="0.41898528" />
-      <window_info anchor="bottom" x="11" y="276" width="1344" height="175" id="Terminal" order="4" sideWeight="0.64657736" weight="0.30605564" />
-      <window_info active="true" anchor="bottom" id="Run" order="5" sideWeight="0.56324404" visible="true" weight="0.3715221" />
+      <window_info active="true" anchor="bottom" x="11" y="276" width="1344" height="175" id="Terminal" order="4" sideWeight="0.64657736" visible="true" weight="0.30605564" />
+      <window_info anchor="bottom" id="Run" order="5" sideWeight="0.56324404" weight="0.3715221" />
       <window_info anchor="bottom" id="Cvs" order="6" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="7" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="8" show_stripe_button="false" sideWeight="0.4985119" weight="0.32569557" />
@@ -525,7 +525,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/apps/gradehoraria/views.py</url>
-          <line>511</line>
+          <line>510</line>
           <option name="timeStamp" value="55" />
         </line-breakpoint>
       </breakpoints>
@@ -857,16 +857,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="427" column="46" lean-forward="true" selection-start-line="425" selection-start-column="5" selection-end-line="427" selection-end-column="46" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/base.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="185">
@@ -876,10 +866,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/apps/gradehoraria/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
+        <state relative-caret-position="260">
           <caret line="35" column="87" selection-start-line="35" selection-start-column="87" selection-end-line="35" selection-end-column="87" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="142">
+          <caret line="359" column="34" selection-start-line="359" selection-start-column="34" selection-end-line="359" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
           </folding>
         </state>
       </provider>

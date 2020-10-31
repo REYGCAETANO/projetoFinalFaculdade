@@ -356,9 +356,8 @@ def listar_parametros(request):
 
 
 class Geneg():
-    def __init__(self, professor, horario, sala, oferta):
+    def __init__(self, professor, sala, oferta):
         self.professor = professor
-        self.horario = horario
         self.sala = sala
         self.oferta = oferta
 
