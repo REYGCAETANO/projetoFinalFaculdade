@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ce93807-f917-4348-8244-7607f2e52bc6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/apps/gradehoraria/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/gradehoraria/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/gradehoraria/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/gradehoraria/models.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,11 +18,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/apps/gradehoraria/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="49" column="13" selection-start-line="49" selection-start-column="13" selection-end-line="49" selection-end-column="13" />
+            <state relative-caret-position="289">
+              <caret line="62" column="81" selection-start-line="62" selection-start-column="81" selection-end-line="62" selection-end-column="81" />
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
@@ -30,10 +30,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/apps/gradehoraria/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="142">
+            <state relative-caret-position="-878">
               <caret line="359" column="34" selection-start-line="359" selection-start-column="34" selection-end-line="359" selection-end-column="34" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
@@ -177,11 +177,11 @@
         <option value="$PROJECT_DIR$/gradehorariaapp/settings.py" />
         <option value="$PROJECT_DIR$/apps/gradehoraria/templates/grade/gerar_grade.html" />
         <option value="$PROJECT_DIR$/templates/base.html" />
-        <option value="$PROJECT_DIR$/apps/gradehoraria/models.py" />
         <option value="$PROJECT_DIR$/apps/gradehoraria/forms.py" />
         <option value="$PROJECT_DIR$/apps/gradehoraria/admin.py" />
         <option value="$PROJECT_DIR$/apps/gradehoraria/urls.py" />
         <option value="$PROJECT_DIR$/apps/gradehoraria/views.py" />
+        <option value="$PROJECT_DIR$/apps/gradehoraria/models.py" />
       </list>
     </option>
   </component>
@@ -847,16 +847,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="49" column="13" selection-start-line="49" selection-start-column="13" selection-end-line="49" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/base.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="185">
@@ -876,10 +866,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/apps/gradehoraria/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="142">
+        <state relative-caret-position="-878">
           <caret line="359" column="34" selection-start-line="359" selection-start-column="34" selection-end-line="359" selection-end-column="34" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/apps/gradehoraria/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="62" column="81" selection-start-line="62" selection-start-column="81" selection-end-line="62" selection-end-column="81" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
           </folding>
         </state>
       </provider>

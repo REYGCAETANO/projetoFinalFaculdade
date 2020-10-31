@@ -54,8 +54,13 @@ class Horario(models.Model):
         (2, 'Vespertino'),
         (3, 'Noturno'),
     )
+    HORARIO_CHOICES = (
+        # (1, '1 - Horário'),
+        (2, '2 - Horário'),
+    )
     id_horario = models.AutoField(primary_key=True)
     turno = models.IntegerField(verbose_name='Turno', choices=TURNO_CHOICES)
+    horario = models.IntegerField(verbose_name='Horário', choices=HORARIO_CHOICES)
     #def __str__(self):
      #   return self.get_dia_semana_display()
 
