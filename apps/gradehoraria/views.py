@@ -7,8 +7,8 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 
-from .forms import ProfessorForm, DisciplinaForm, CursoForm, TurmaForm, HorarioForm, SalaForm, OfertaForm, ParametrosGradeForm, GeneForm
-from .models import Disciplina, Curso, Professor, Turma, Horario, Sala, Oferta, ParametrosGrade, Gene
+from .forms import ProfessorForm, DisciplinaForm, CursoForm, TurmaForm, SalaForm, OfertaForm, ParametrosGradeForm, GeneForm
+from .models import Disciplina, Curso, Professor, Turma, Sala, Oferta, ParametrosGrade, Gene
 
 import random
 import itertools
@@ -410,8 +410,6 @@ class Geneg():
 
 class Individuo():
 
-    professores = Professor.objects.count()
-    horarios = Horario.objects.count()
     salas = Sala.objects.count()
 
     def __init__(self, geracao=0):
@@ -425,7 +423,7 @@ class Individuo():
         for j in self.oferta:
             professor = random.choice(Professor.objects.filter(disciplinas=j.disciplina_id))
 
-            self.cromossomo.append(Geneg(professor, random.randrange(1, self.horarios), random.randrange(1, self.salas),j))
+            self.cromossomo.append(Geneg(professor, random.randrange(1, self.salas), j))
 
     def avaliacao(self):
         nota = 0

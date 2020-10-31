@@ -21,7 +21,7 @@ class ProfessorForm(forms.ModelForm):
 class HorarioForm(forms.ModelForm):
     class Meta:
         model = Horario
-        fields = ('dia_semana', 'turno', 'horario')
+        fields = '__all__'
 
 
 class SalaForm(forms.ModelForm):
