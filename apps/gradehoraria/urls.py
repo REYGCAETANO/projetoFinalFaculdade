@@ -35,11 +35,6 @@ urlpatterns = [
     path('oferta/editar/<int:id_oferta>/', views.editar_oferta, name='editar_oferta'),
     path('oferta/excluir/<int:id_oferta>/', views.deleta_oferta, name='deleta_oferta'),
 
-    path('horarios', views.listar_horarios, name='listar_horarios'),
-    path('horario/adicionar/', views.adicionar_horario, name='adicionar_horario'),
-    path('horario/editar/<int:id_horario>/', views.editar_horario, name='editar_horario'),
-    path('horario/excluir/<int:id_horario>/', views.deleta_horario, name='deleta_horario'),
-
     path('parametros/adicionar/', views.adicionar_parametros, name='adicionar_parametros'),
     path('parametros/listar/', views.listar_parametros, name='listar_parametros'),
     path('parametros/editar/<int:id_parametro>/', views.editar_parametros, name='editar_parametros'),
