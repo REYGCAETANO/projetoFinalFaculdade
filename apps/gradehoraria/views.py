@@ -262,51 +262,6 @@ def editar_sala(request, id_sala):
 
 
 @login_required(login_url='/contas/login')
-def adicionar_horario(request):
-    if request.method == 'POST':
-        form = HorarioForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Horário cadastrado com sucesso!')
-            return redirect('gradehoraria:listar_horarios')
-        else:
-            messages.error(request, 'Erro ao cadastrar turno!')
-    else:
-        form = HorarioForm()
-    return render(request, 'horario/adicionar_horario.html', {'form': form})
-
-
-@login_required(login_url='/contas/login')
-def listar_horarios(request):
-    horarios = Horario.objects.all()
-    return render(request, 'horario/listar_horarios.html', {'horarios': horarios})
-
-
-# FIXME: Criar confirmação de exclusão antes de persistir no banco
-@login_required(login_url='/contas/login')
-def deleta_horario(request, id_horario):
-    deleteHorario = Horario.objects.get(id_horario=id_horario).delete()
-    messages.warning(request, 'Horário excluido com sucesso!')
-    return redirect('gradehoraria:listar_horarios')
-
-
-@login_required(login_url='/contas/login')
-def editar_horario(request, id_horario):
-    editar_horario = get_object_or_404(Horario, id_horario=id_horario)
-    if request.method == 'POST':
-        form = HorarioForm(request.POST, instance=editar_horario)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Dados do Horário alterados com sucesso!')
-            return redirect('gradehoraria:listar_horarios')
-        else:
-            messages.error(request, 'Erro ao alterar dados do horário')
-    else:
-        form = HorarioForm(instance=editar_horario)
-        return render(request, 'horario/adicionar_horario.html', {'form': form})
-
-
-@login_required(login_url='/contas/login')
 def adicionar_oferta(request):
     if request.method == 'POST':
         form = OfertaForm(request.POST)
