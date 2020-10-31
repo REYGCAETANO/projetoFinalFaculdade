@@ -17,6 +17,7 @@
                             <th>População</th>
                             <th>Qtd. máxima de tentativas</th>
                             <th>Taxa de mutação</th>
+                            <th>Turma para gerar</th>
                             <th scope="col">Ações</th>
                         </tr>
                     </thead>
@@ -26,6 +27,7 @@
                                 <td>{{ p.tamanhoPopulacao }}</td>
                                 <td>{{ p.numeroGeracoes }}</td>
                                 <td>{{ p.taxaMutacao }}</td>
+                                <td>{{ p.paramTurma }}</td>
                                 <td>
                                     <a href="{% url 'gradehoraria:editar_parametros' p.id_parametro %}" class="btn btn-info btn-sm">Editar</a>
                                 </td>

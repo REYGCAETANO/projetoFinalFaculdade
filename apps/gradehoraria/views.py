@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db import connection
 
 from .forms import ProfessorForm, DisciplinaForm, CursoForm, TurmaForm, HorarioForm, SalaForm, OfertaForm, ParametrosGradeForm, GeneForm
 from .models import Disciplina, Curso, Professor, Turma, Horario, Sala, Oferta, ParametrosGrade, Gene
@@ -41,6 +42,7 @@ def listar_professores(request):
         'professores': professores
     }
     return render(request, templane_name, context)
+
 
 @login_required(login_url='/contas/login')
 def editar_professor(request, id_professor):
@@ -168,6 +170,7 @@ def editar_curso(request, id_curso):
         form = CursoForm(instance=editarCurso)
         return render(request, 'curso/adicionar_curso.html', {'form': form})
 
+
 @login_required(login_url='/contas/login')
 def adicionar_turma(request):
     if request.method == 'POST':
@@ -213,10 +216,6 @@ def editar_turma(request, id_turma):
         return render(request, 'turma/adicionar_turma.html', {'form': form})
 
 
-
-
-
-
 @login_required(login_url='/contas/login')
 def adicionar_sala(request):
     if request.method == 'POST':
@@ -259,7 +258,7 @@ def editar_sala(request, id_sala):
             messages.error(request, 'Erro ao alterar dados da sala')
     else:
         form = SalaForm(instance=editar_sala)
-        return render(request, 'turma/adicionar_sala.html', {'form': form})
+        return render(request, 'sala/adicionar_sala.html', {'form': form})
 
 
 @login_required(login_url='/contas/login')
@@ -376,6 +375,7 @@ def adicionar_parametros(request):
             messages.error(request, 'Usuário sem permissão para cadastrar parâmetro!')
             return redirect('/')
 
+
 @login_required(login_url='/contas/login')
 def editar_parametros(request, id_parametro):
     editar_parametro = get_object_or_404(ParametrosGrade, id_parametro=id_parametro)
@@ -393,6 +393,7 @@ def editar_parametros(request, id_parametro):
         form = ParametrosGradeForm(instance=editar_parametro)
         return render(request, 'grade/cadastrar_parametros.html', {'form': form})
 
+
 @login_required(login_url='/contas/login')
 def listar_parametros(request):
     parametros = ParametrosGrade.objects.all()
@@ -400,10 +401,11 @@ def listar_parametros(request):
 
 
 class Geneg():
-    def __init__(self, professor, horario, sala):
+    def __init__(self, professor, horario, sala, oferta):
         self.professor = professor
         self.horario = horario
         self.sala = sala
+        self.oferta = oferta
 
 
 class Individuo():
@@ -412,15 +414,18 @@ class Individuo():
     horarios = Horario.objects.count()
     salas = Sala.objects.count()
 
-    def __init__(self, tamanhoCromossomo, geracao=0):
-        self.tamanhoCromossomo = tamanhoCromossomo
+    def __init__(self, geracao=0):
+        self.parametros = ParametrosGrade.objects.get(pk=1)
+        self.oferta = Oferta.objects.filter(turma_id=self.parametros.paramTurma_id)
+        self.tamanhoCromossomo = self.oferta.count()
         self.notaAvaliacao = 0
         self.geracao = geracao
         self.cromossomo = []
 
-        for j in range(self.tamanhoCromossomo):
-            self.cromossomo.append(
-                Geneg(random.randrange(1, self.professores), random.randrange(1, self.horarios), random.randrange(1, self.salas)))
+        for j in self.oferta:
+            professor = random.choice(Professor.objects.filter(disciplinas=j.disciplina_id))
+
+            self.cromossomo.append(Geneg(professor, random.randrange(1, self.horarios), random.randrange(1, self.salas),j))
 
     def avaliacao(self):
         nota = 0
@@ -435,9 +440,9 @@ class Individuo():
         corte = random.randint(0, self.tamanhoCromossomo)
         cromossomo1 = self.cromossomo[0:corte] + other.cromossomo[corte::]
         cromossomo2 = other.cromossomo[0:corte] + self.cromossomo[corte::]
-        filho1 = Individuo(self.tamanhoCromossomo, self.geracao + 1)
+        filho1 = Individuo(self.geracao + 1)
         filho1.cromossomo = cromossomo1
-        filho2 = Individuo(self.tamanhoCromossomo, self.geracao + 1)
+        filho2 = Individuo(self.geracao + 1)
         filho2.cromossomo = cromossomo2
         return [filho1, filho2]
 
@@ -452,18 +457,21 @@ class Individuo():
                 cromossomo[pos2] = val1
         return self
 
-
 class AlgoritmoGenetico():
-    def __init__(self, tamanhoPopulacao):
+
+    def __init__(self, tamanhoPopulacao, numeroGeracao, taxaMutacao):
         self.tamanhoPopulacao = tamanhoPopulacao
+        self.numeroGeracao = numeroGeracao
+        self.taxaMutacao = taxaMutacao
         self.populacao = []
         self.geracao = 0
         self.melhorSolucao = -1
         self.ofertas = []
 
-    def inicializaPopulacao(self, tamanhoCromossomo):
+    def inicializaPopulacao(self):
+
         for i in range(self.tamanhoPopulacao):
-            self.populacao.append(Individuo(tamanhoCromossomo))
+            self.populacao.append(Individuo())
         self.melhorSolucao = self.populacao[0]
 
     def avaliacao(self, populacao):
@@ -498,14 +506,14 @@ class AlgoritmoGenetico():
         print("G: %s -> Valor: %s" % (melhorSolucao.geracao,
                                       melhorSolucao.notaAvaliacao))
 
-    def resolver(self, numeroGeracoes, tamanhoCromossomo, taxaMutacao):
+    def resolver(self):
 
-        self.inicializaPopulacao(tamanhoCromossomo)
+        self.inicializaPopulacao()
         self.avaliacao(self.populacao)
         self.ordenaPopulacao()
         # self.visualizaGeracao()
 
-        for geracao in range(numeroGeracoes):
+        for geracao in range(self.numeroGeracao):
             pop_temp = self.selecionaPai(self.populacao)
             self.populacao = []
             for i in self.populacao:
@@ -516,7 +524,7 @@ class AlgoritmoGenetico():
                 self.populacao.extend(pais[0].crossover(pais[1]))
 
             for i in self.populacao:
-                i.mutacao(i.cromossomo, taxaMutacao)
+                i.mutacao(i.cromossomo, self.taxaMutacao)
 
             self.avaliacao(self.populacao)
             self.ordenaPopulacao()
@@ -534,36 +542,21 @@ class AlgoritmoGenetico():
 # FIXME: Carregar o tamanho do cromossomo da base de dados.
 @login_required(login_url='/contas/login')
 def gerarGradeHoraria(request):
-
     try:
         parametros = ParametrosGrade.objects.get(pk=1)
-        professores = Professor.objects.prefetch_related('disciplinas')
-        ag = AlgoritmoGenetico(parametros.tamanhoPopulacao)
-        resultado = ag.resolver(parametros.numeroGeracoes, 12, parametros.taxaMutacao)
-
-        #gene = Gene.objects.select_related('cd_professor').select_related('cd_horario').select_related('cd_sala')
-        #for gene in resultado[0]:
-        #qtdProf = Professor.objects.prefetch_related('disciplinas').get(disciplinas=3, id_professor=resul)
-        #resul =random.choice(qtdProf)
-        professor = random.choices(Professor.objects.prefetch_related('disciplinas').filter(disciplinas=7))
-
-        g = Gene.objects.create(cd_professor=Professor.objects.prefetch_related('disciplinas').get(disciplinas=7, id_professor=professor[0].id_professor),
-                               #(cd_professor=Professor.objects.get(id_professor=25),
-                                cd_horario=Horario.objects.get(id_horario=15),
-                                cd_sala=Sala.objects.get(id_sala=5),
-                                oferta=Oferta.objects.select_related('disciplina').prefetch_related('disciplina').get(disciplina=7))
-        
-        g.save
-
-        #cd_professor = Professor.objects.prefetch_related('disciplinas').get(id_disciplinas=4)
-        professorr = random.choices(Professor.objects.prefetch_related('disciplinas').filter(disciplinas=2))
-        oferta = Oferta.objects.select_related('disciplina').prefetch_related('disciplina').get(disciplina=2)
-
-        print(professorr[0].id_professor)
-        print('Oferta' + ' ' + str(oferta.id_oferta))
+        ag = AlgoritmoGenetico(parametros.tamanhoPopulacao, parametros.numeroGeracoes, parametros.taxaMutacao)
+        resultado = ag.resolver()
 
 
-        return render(request, 'grade/gerar_grade.html', {'resultado': resultado[0]})
+        '''for gene in resultado[0]:
+            g = Gene.objects.create(cd_professor_id=gene.professor,
+                                    cd_horario_id=gene.horario,
+                                    cd_sala_id=gene.sala,
+                                    oferta_id=Oferta.objects.select_related('disciplina').prefetch_related('disciplina').get(turma_id=parametros.paramTurma_id))
+
+            g.save'''
+
+        return render(request, 'grade/gerar_grade.html', {'resultado': resultado[0], 'geracao': resultado[1]})
     except Exception as e:
-        messages.error(request, e)
+        messages.error(request, e.with_traceback())
         return redirect('gradehoraria:listar_parametros')

@@ -32,11 +32,12 @@ class Professor(models.Model):
         nome = str(self.nm_professor).strip().split()
         return nome[0] + ' ' + nome[len(nome)-1]
     
-    '''def __str__(self):
-        return "%s (%s)" % (
-            self.nm_professor,
-            ", ".join(disciplinas.sigla_disciplina for disciplinas in self.disciplinas.all()),
-        )'''
+    # def __str__(self):
+    #     nome = str(self.nm_professor).strip().split()
+    #     return "%s (%s)" % (
+    #         nome[0] + ' ' + nome[len(nome)-1],
+    #         ", ".join(disciplinas.sigla_disciplina for disciplinas in self.disciplinas.all()),
+    #     )
     class Meta:
         unique_together = ('matricula',)
         verbose_name = 'Professor'
@@ -159,3 +160,4 @@ class ParametrosGrade(models.Model):
     tamanhoPopulacao = models.IntegerField(verbose_name="População Inicial")
     numeroGeracoes = models.IntegerField(verbose_name="Qtd. máxima de tentativas")
     taxaMutacao = models.FloatField(verbose_name='Taxa de Mutação')
+    paramTurma = models.ForeignKey(Turma, on_delete=models.CASCADE, verbose_name='Turma')
