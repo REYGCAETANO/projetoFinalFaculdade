@@ -1,14 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
+from more_itertools import unique_everseen
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 
-from .forms import ProfessorForm, DisciplinaForm, CursoForm, TurmaForm, SalaForm, OfertaForm, ParametrosGradeForm, GeneForm
-from .models import Disciplina, Curso, Professor, Turma, Sala, Oferta, ParametrosGrade, Gene
+from .forms import ProfessorForm, DisciplinaForm, CursoForm, TurmaForm, HorarioForm, SalaForm, OfertaForm, ParametrosGradeForm, GeneForm
+from .models import Disciplina, Curso, Professor, Turma, Horario, Sala, Oferta, ParametrosGrade, Gene
 
 import random
 import itertools
@@ -37,7 +38,8 @@ def adicionar_professor(request):
 @login_required(login_url='/contas/login')
 def listar_professores(request):
     templane_name = 'professor/listar_professores.html'
-    professores = Professor.objects.all()
+    professores = Professor.objects.prefetch_related('disciplinas')
+
     context = {
         'professores': professores
     }
@@ -262,6 +264,51 @@ def editar_sala(request, id_sala):
 
 
 @login_required(login_url='/contas/login')
+def adicionar_horario(request):
+    if request.method == 'POST':
+        form = HorarioForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Horário cadastrado com sucesso!')
+            return redirect('gradehoraria:listar_horarios')
+        else:
+            messages.error(request, 'Erro ao cadastrar turno!')
+    else:
+        form = HorarioForm()
+    return render(request, 'horario/adicionar_horario.html', {'form': form})
+
+
+@login_required(login_url='/contas/login')
+def listar_horarios(request):
+    horarios = Horario.objects.all()
+    return render(request, 'horario/listar_horarios.html', {'horarios': horarios})
+
+
+# FIXME: Criar confirmação de exclusão antes de persistir no banco
+@login_required(login_url='/contas/login')
+def deleta_horario(request, id_horario):
+    deleteHorario = Horario.objects.get(id_horario=id_horario).delete()
+    messages.warning(request, 'Horário excluido com sucesso!')
+    return redirect('gradehoraria:listar_horarios')
+
+
+@login_required(login_url='/contas/login')
+def editar_horario(request, id_horario):
+    editar_horario = get_object_or_404(Horario, id_horario=id_horario)
+    if request.method == 'POST':
+        form = HorarioForm(request.POST, instance=editar_horario)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Dados do Horário alterados com sucesso!')
+            return redirect('gradehoraria:listar_horarios')
+        else:
+            messages.error(request, 'Erro ao alterar dados do horário')
+    else:
+        form = HorarioForm(instance=editar_horario)
+        return render(request, 'horario/adicionar_horario.html', {'form': form})
+
+
+@login_required(login_url='/contas/login')
 def adicionar_oferta(request):
     if request.method == 'POST':
         form = OfertaForm(request.POST)
@@ -282,9 +329,13 @@ def adicionar_oferta(request):
 
 
 @login_required(login_url='/contas/login')
-def listar_ofertas(request):
-    ofertas = Oferta.objects.all()
-    return render(request, 'oferta/listar_ofertas.html', {'ofertas': ofertas})
+def listar_ofertas(request, turma=-1):
+    turmas = Turma.objects.all()
+    if turma==-1:
+        ofertas = Oferta.objects.all().order_by('id_oferta')
+    else:
+        ofertas = Oferta.objects.filter(turma_id=turma)
+    return render(request, 'oferta/listar_ofertas.html', {'ofertas': ofertas, 'turmas': turmas})
 
 
 @login_required(login_url='/contas/login')
@@ -356,37 +407,79 @@ def listar_parametros(request):
 
 
 class Geneg():
-    def __init__(self, professor, sala, oferta):
+    def __init__(self, professor, horario, sala, oferta=0):
         self.professor = professor
+        self.horario = horario
         self.sala = sala
         self.oferta = oferta
 
 
 class Individuo():
 
-    salas = Sala.objects.count()
-
     def __init__(self, geracao=0):
         self.parametros = ParametrosGrade.objects.get(pk=1)
-        self.oferta = Oferta.objects.filter(turma_id=self.parametros.paramTurma_id)
-        self.tamanhoCromossomo = self.oferta.count()
+        self.ofertas = Oferta.objects.filter(turma_id=self.parametros.paramTurma_id).order_by('id_oferta')
+        self.tamanhoCromossomo = self.ofertas.count()
         self.notaAvaliacao = 0
         self.geracao = geracao
         self.cromossomo = []
+        self.melhorCromossomo = []
 
-        for j in self.oferta:
-            professor = random.choice(Professor.objects.filter(disciplinas=j.disciplina_id))
+        horarios = Horario.objects.all()
+        salas = Sala.objects.all()
+        #def
+        # for j in self.ofertas:
+        #     professor = random.choice(Professor.objects.filter(disciplinas=j.disciplina_id))
+        #     self.cromossomo.append(Geneg(professor, random.choice(horarios), random.choice(salas)))
 
-            self.cromossomo.append(Geneg(professor, random.randrange(1, self.salas), j))
+        for j in self.ofertas:
+            try:
+                professor = random.choice(Professor.objects.filter(disciplinas=j.disciplina_id))
+                self.cromossomo.append(Geneg(professor, random.choice(horarios), random.choice(salas)))
 
-    def avaliacao(self):
-        nota = 0
-        for i, j in itertools.combinations(self.cromossomo, 2):
-            if i.horario == j.horario and i.professor == j.professor:
-                nota += 10
-            if i.sala == j.sala and i.horario == j.horario:
-                nota += 10
-        self.notaAvaliacao = nota
+            # except UnboundLocalError as ue:
+            #     print("")
+
+            except Exception as e:
+                print(" Professor: %s Disciplina: %s"% (professor.nm_professor, j.disciplina_id))
+
+    def validacaoParametros(self):
+
+        if self.tamanhoCromossomo == 0:
+            return "Nenhuma oferta foi cadastrada para essa turma"
+
+
+    def cromossomoMelhorSolucao (self, cromossomo):
+        for g in cromossomo:
+            disciplinas = random.choice(Disciplina.objects.filter(professor_disciplina__id_professor=g.professor.id_professor))
+
+            try:
+                ofertaFinal = self.ofertas.get(disciplina_id=disciplinas.id_disciplina)
+                self.melhorCromossomo.append(Geneg(g.professor, g.horario, g.sala, ofertaFinal))
+
+            except Oferta.DoesNotExist:
+                continue
+            # for d in Disciplina.objects.filter(professor_disciplina__id_professor=g.professor.id_professor):
+            #     try:
+            #         ofertaFinal = self.ofertas.get(disciplina_id=d.id_disciplina)
+            #         self.melhorCromossomo.append(Geneg(g.professor, g.horario, g.sala, ofertaFinal))
+            #
+            #     except Oferta.DoesNotExist:
+            #         continue
+        return self.melhorCromossomo
+
+            # professores = Professor.objects.prefetch_related('disciplinas').filter(id_professor=g.professor.id_professor)
+            # ofertaFinaTeste = self.ofertas.get(disciplina_id=6)
+            # self.cromossomo.append(Geneg(j.professor, j.horario, j.sala, ofertaFinal))
+
+    # def avaliacao(self):
+    #     nota = 0
+    #     for i, j in itertools.combinations(self.cromossomo, 2):
+    #         if i.horario == j.horario and i.professor == j.professor:
+    #             nota += 10
+    #         if i.sala == j.sala and i.horario == j.horario:
+    #             nota += 10
+    #     self.notaAvaliacao = nota
 
     def crossover(self, other):
         corte = random.randint(0, self.tamanhoCromossomo)
@@ -411,24 +504,24 @@ class Individuo():
 
 class AlgoritmoGenetico():
 
-    def __init__(self, tamanhoPopulacao, numeroGeracao, taxaMutacao):
-        self.tamanhoPopulacao = tamanhoPopulacao
-        self.numeroGeracao = numeroGeracao
-        self.taxaMutacao = taxaMutacao
+    def __init__(self, parametros):
+        self.parametros = parametros
+        self.tamanhoPopulacao = parametros.tamanhoPopulacao
         self.populacao = []
         self.geracao = 0
         self.melhorSolucao = -1
-        self.ofertas = []
+        # self.ofertas = []
+        self.cromossomoMelhorSolucao = []
+        self.ofertas = Oferta.objects.filter(turma_id=self.parametros.paramTurma_id)
+        self.geracaoFinal = 0
 
     def inicializaPopulacao(self):
-
         for i in range(self.tamanhoPopulacao):
             self.populacao.append(Individuo())
         self.melhorSolucao = self.populacao[0]
 
     def avaliacao(self, populacao):
         nota = 0
-
         for p in populacao:
             for i, j in itertools.combinations(p.cromossomo, 2):
                 if i.horario == j.horario and i.professor == j.professor:
@@ -437,15 +530,28 @@ class AlgoritmoGenetico():
                     nota += 10
             p.notaAvaliacao = nota
 
-    #            if p.notaAvaliacao > 0:
-    #                print(p.notaAvaliacao)
+    def avaliacaoMelhorSolucao(self, cromossomo):
+        nota = 0
+        ofertas = []
+
+        try:
+            for g in cromossomo:
+                ofertas.append(g.oferta.id_oferta)
+                resultado = list(unique_everseen(ofertas))
+            if self.ofertas.count() != len(resultado):
+                nota += 100
+            return nota
+
+        except UnboundLocalError as ue:
+            print("Não existe ofertas cadastrada para essa turma %s" %self.parametros.paramTurma_id)
+            raise
 
     def ordenaPopulacao(self):
         self.populacao = sorted(self.populacao,
                                 key=lambda populacao: populacao.notaAvaliacao,
                                 reverse=False)
 
-    def melhorIndividuo(self, individuo):
+    def     melhorIndividuo(self, individuo):
         if individuo.notaAvaliacao < self.melhorSolucao.notaAvaliacao:
             self.melhorSolucao = individuo
 
@@ -457,15 +563,15 @@ class AlgoritmoGenetico():
         melhorSolucao = self.populacao[0]
         print("G: %s -> Valor: %s" % (melhorSolucao.geracao,
                                       melhorSolucao.notaAvaliacao))
+        self.geracaoFinal = melhorSolucao.geracao
 
-    def resolver(self):
-
+    def resolver(self, numeroGeracoes,  taxaMutacao):
         self.inicializaPopulacao()
+        Individuo().validacaoParametros()
         self.avaliacao(self.populacao)
         self.ordenaPopulacao()
-        # self.visualizaGeracao()
 
-        for geracao in range(self.numeroGeracao):
+        for geracao in range(numeroGeracoes):
             pop_temp = self.selecionaPai(self.populacao)
             self.populacao = []
             for i in self.populacao:
@@ -476,18 +582,22 @@ class AlgoritmoGenetico():
                 self.populacao.extend(pais[0].crossover(pais[1]))
 
             for i in self.populacao:
-                i.mutacao(i.cromossomo, self.taxaMutacao)
+                i.mutacao(i.cromossomo, taxaMutacao)
 
             self.avaliacao(self.populacao)
             self.ordenaPopulacao()
             self.visualizaGeracao()
             self.melhorIndividuo(self.populacao[0])
             if self.melhorSolucao.notaAvaliacao == 0:
-                print("Melhor Solução -> G: %s Nota: %s Cromossomo: %s" %
-                      (self.melhorSolucao.geracao,
-                       self.melhorSolucao.notaAvaliacao,
-                       self.melhorSolucao.cromossomo))
-                return self.melhorSolucao.cromossomo, self.melhorSolucao.geracao
+                self.cromossomoMelhorSolucao = Individuo().cromossomoMelhorSolucao(self.melhorSolucao.cromossomo)
+                if self.avaliacaoMelhorSolucao(self.cromossomoMelhorSolucao) == 0:
+                    print("Melhor Solução -> G: %s \nNota: %s \nCromossomo: %s \ncromossomoMelhorSolucao: %s" %
+                          # (self.melhorSolucao.geracao,
+                          (self.geracaoFinal,
+                           self.melhorSolucao.notaAvaliacao,
+                           self.melhorSolucao.cromossomo,
+                           self.cromossomoMelhorSolucao,))
+                    return self.cromossomoMelhorSolucao, self.geracaoFinal+1
 
 
 # FIXME: Criar exception para quando o tamanho do cromossomo for superior a quantidade de aulas na semana
@@ -496,9 +606,17 @@ class AlgoritmoGenetico():
 def gerarGradeHoraria(request):
     try:
         parametros = ParametrosGrade.objects.get(pk=1)
-        ag = AlgoritmoGenetico(parametros.tamanhoPopulacao, parametros.numeroGeracoes, parametros.taxaMutacao)
-        resultado = ag.resolver()
+        turma = Turma.objects.get(id_turma=parametros.paramTurma_id)
+        ofertas = Oferta.objects.filter(turma_id=parametros.paramTurma_id).count()
 
+        if ofertas > 12:
+            messages.error(request, "Existem %s ofertas cadastrada para essa turma. Limite máximo 12 ofertas" %ofertas, turma.ds_turma)
+            return redirect('gradehoraria:listar_ofertas', turma.id_turma)
+        ag = AlgoritmoGenetico(parametros)
+        resultado = ag.resolver(parametros.numeroGeracoes, parametros.taxaMutacao)
+
+        # gene = Gene.objects.select_related('cd_professor').select_related('cd_horario').select_related('cd_sala')
+        #professor = random.choices(Professor.objects.prefetch_related('disciplinas').filter(disciplinas=7))
 
         '''for gene in resultado[0]:
             g = Gene.objects.create(cd_professor_id=gene.professor,
@@ -508,7 +626,32 @@ def gerarGradeHoraria(request):
 
             g.save'''
 
+        for gene in resultado[0]:
+            g = Gene.objects.create(cd_professor_id=gene.professor.id_professor,
+                                    cd_horario_id=gene.horario.id_horario,
+                                    cd_sala_id=gene.sala.id_sala,
+                                    oferta_id=gene.oferta.id_oferta)
+
+            g.save
+
         return render(request, 'grade/gerar_grade.html', {'resultado': resultado[0], 'geracao': resultado[1]})
+    except UnboundLocalError:
+        messages.error(request, "Não existe ofertas cadastrada para a turma - %s" %turma.ds_turma)
+        return redirect('gradehoraria:listar_parametros')
+    # except TypeError:
+    #     messages.error(request, "Não foi encontrado uma solução para o problema. Mude os parâmetros ou gere a grade novamente.")
+    #     return redirect('gradehoraria:listar_parametros')
     except Exception as e:
         messages.error(request, e.with_traceback())
         return redirect('gradehoraria:listar_parametros')
+
+
+# def salvarGradeHoraria(resultado):
+#
+#     for gene in resultado:
+#         g = Gene.objects.create(cd_professor_id=gene.professor,
+#                                 cd_horario_id=gene.horario,
+#                                 cd_sala_id=gene.sala,
+#                                 oferta_id=Oferta.oferta.id_oferta)
+#
+#         g.save

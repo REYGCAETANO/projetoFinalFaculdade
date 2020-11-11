@@ -33,20 +33,25 @@
                 <th scope="row">1</th>
                 {% for field in resultado %}
                     <td>
-                        Sala: {{ field.sala }} <br/>Professor: {{ field.professor }}  <br/>Oferta: {{ field.oferta.id_oferta }}<br/>Disciplina: {{ field.oferta.disciplina.sigla_disciplina }}
+                        Sala: {{ field.sala }} <br/>
+                        Turma: {{ field.oferta.turma.ds_turma }} <br/>
+                        Professor: {{ field.professor }}  <br/>
+                        Oferta: {{ field.oferta.id_oferta }}<br/>
+                        Disciplina: {{ field.oferta.disciplina.sigla_disciplina }}
                     </td>
+
                     {%if forloop.counter == 6%}
                         <tr/>
                         <tr>
                         <th scope="row">2</th>
-                    {%endif%}
-                    {% endfor %}
+                    {% endif %}
+                {% endfor %}
             </tr>
        </tbody>
        <tfoot>
-       <td colspan="7" style="text-align:center; background-color: lightgray; padding: 5px;font-size: 110%">Solução gerada na Geração: {{geracao}}</td>
-
-   </tfoot>
+        <td colspan="7" style="text-align:center; background-color: lightgray; padding: 5px;font-size: 110%">Solução gerada na Geração: {{geracao}}</td>
+       </tfoot>
    </table>
+    <!--<a href="{% url 'gradehoraria:salvarGradeHoraria' resultado %}" class="btn btn-secondary" role="button">Salvar Grade</a> -->
 </div>
 {% endblock body %}

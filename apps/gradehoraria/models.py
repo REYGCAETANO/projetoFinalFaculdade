@@ -10,6 +10,9 @@ class Disciplina(models.Model):
     def __str__(self):
         return self.sigla_disciplina + ' - ' + self.ds_disciplina
 
+    def listar_disciplinas(self, obj):
+        return ", ".join(c.sigla_disciplina for c in obj.disciplinas.all())
+
     def save(self, force_insert=False, force_update=False):
         self.ds_disciplina = self.ds_disciplina.upper()
         super(Disciplina, self).save(force_insert, force_update)
@@ -31,41 +34,39 @@ class Professor(models.Model):
     def __str__(self):
         nome = str(self.nm_professor).strip().split()
         return nome[0] + ' ' + nome[len(nome)-1]
-    
-    # def __str__(self):
+
+    # def list_disciplinas(self):
+    #     return ", ".join([c.sigla_disciplina for c in self.disciplinas.all()])
+    # list_disciplinas.short_description = "Disciplinas"
+
+    # def listar_disciplinas(self):
     #     nome = str(self.nm_professor).strip().split()
     #     return "%s (%s)" % (
     #         nome[0] + ' ' + nome[len(nome)-1],
     #         ", ".join(disciplinas.sigla_disciplina for disciplinas in self.disciplinas.all()),
     #     )
+
     class Meta:
         unique_together = ('matricula',)
         verbose_name = 'Professor'
         verbose_name_plural = 'Professores'
-    '''def __str__(self):
-        return "%s (%s)" % (self.nm_professor, ", ".join(disciplina.nm_disciplina for disciplina in self.disciplinas.all()))'''
-    #def __str__(self):
-    #    return self.nm_professor
+    # def __str__(self):
+    #     return "%s (%s)" % (self.nm_professor, ", ".join(disciplina.nm_disciplina for disciplina in self.disciplinas.all()))
+
 
 class Horario(models.Model):
-
-    TURNO_CHOICES = (
-        (1, 'Matutino'),
-        (2, 'Vespertino'),
-        (3, 'Noturno'),
-    )
     HORARIO_CHOICES = (
-        # (1, '1 - Horário'),
+        (1, '1 - Horário'),
         (2, '2 - Horário'),
+        (3, '3 - Horário'),
+        (4, '4 - Horário'),
+        (5, '5 - Horário'),
+        (6, '6 - Horário'),
     )
     id_horario = models.AutoField(primary_key=True)
-    turno = models.IntegerField(verbose_name='Turno', choices=TURNO_CHOICES)
     horario = models.IntegerField(verbose_name='Horário', choices=HORARIO_CHOICES)
     #def __str__(self):
      #   return self.get_dia_semana_display()
-
-    class Meta:
-        verbose_name_plural = 'Horários'
 
 
 class Sala(models.Model):
@@ -104,9 +105,16 @@ class Turma(models.Model):
         (9, '9º Semestre'),
         (10, '10ºSemestre'),
     )
+    TURNO_CHOICES = (
+        (1, 'Matutino'),
+        (2, 'Vespertino'),
+        (3, 'Noturno'),
+    )
     id_turma = models.AutoField(primary_key=True)
     ds_turma = models.CharField(max_length=20, verbose_name='Descrição da Turma', unique=True)
     semestre = models.IntegerField(verbose_name='Semestre', choices=SEMESTRE_CHOICES)
+    turno = models.IntegerField(verbose_name='Turno', choices=TURNO_CHOICES)
+
 
     def __str__(self):
         return self.ds_turma
@@ -138,6 +146,8 @@ class Gene(models.Model):
     cd_sala = models.ForeignKey(Sala, on_delete=models.CASCADE, verbose_name='cd_sala')
     oferta = models.OneToOneField(Oferta, on_delete=models.CASCADE, verbose_name='cd_gene')
 
+    class Meta:
+        unique_together = ['cd_professor', 'cd_horario', 'cd_sala', 'oferta']
 
 class Grade(models.Model):
     id_grade = models.AutoField(primary_key=True)

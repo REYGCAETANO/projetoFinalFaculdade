@@ -32,6 +32,7 @@ urlpatterns = [
 
     path('oferta/adicionar/', views.adicionar_oferta, name='adicionar_oferta'),
     path('oferta/listar/', views.listar_ofertas, name='listar_ofertas'),
+    path('oferta/listar/<int:turma>/', views.listar_ofertas, name='listar_ofertas'),
     path('oferta/editar/<int:id_oferta>/', views.editar_oferta, name='editar_oferta'),
     path('oferta/excluir/<int:id_oferta>/', views.deleta_oferta, name='deleta_oferta'),
 
@@ -40,6 +41,7 @@ urlpatterns = [
     path('parametros/editar/<int:id_parametro>/', views.editar_parametros, name='editar_parametros'),
 
     path('grade/gerar_grade/', views.gerarGradeHoraria, name='gerarGradeHoraria'),
+    # path('grade/salvarGrade/<List:resultado>/', views.salvarGradeHoraria, name='salvarGradeHoraria'),
 
     #path('', views.gradeHoraria, name='hello_world'),
     #path('', views.index, name='index'),

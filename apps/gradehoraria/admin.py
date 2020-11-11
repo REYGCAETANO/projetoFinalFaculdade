@@ -17,8 +17,8 @@ class DisciplinaAdmin(admin.ModelAdmin):
 
 
 class HorarioAdmin(admin.ModelAdmin):
-    list_display = ['turno']
-    list_filter = ['turno']
+    list_display = ['horario']
+    list_filter = ['horario']
 
 
 class ProfessorAdmin(admin.ModelAdmin):
