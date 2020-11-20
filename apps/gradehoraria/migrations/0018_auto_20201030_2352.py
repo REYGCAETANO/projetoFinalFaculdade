@@ -10,10 +10,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='turma',
-            name='turno',
-            field=models.IntegerField(choices=[(1, 'Matutino'), (2, 'Vespertino'), (3, 'Noturno')], default=5, verbose_name='Turno'),
-            preserve_default=False,
-        ),
+
     ]

@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 
 from .forms import ProfessorForm, DisciplinaForm, CursoForm, TurmaForm, HorarioForm, SalaForm, OfertaForm, ParametrosGradeForm, GeneForm
-from .models import Disciplina, Curso, Professor, Turma, Horario, Sala, Oferta, ParametrosGrade, Gene
+from .models import Disciplina, Curso, Professor, Turma, Horario, Sala, Oferta, ParametrosGrade, Gene, Grade
 
 import random
 import itertools
@@ -40,6 +40,8 @@ def listar_professores(request):
     templane_name = 'professor/listar_professores.html'
     professores = Professor.objects.prefetch_related('disciplinas')
 
+    for p in professores    :
+        print(p)
     context = {
         'professores': professores
     }
@@ -406,6 +408,55 @@ def listar_parametros(request):
     return render(request, 'grade/listar_parametros.html', {'parametros': parametros})
 
 
+@login_required(login_url='/contas/login')
+def listar_grades(request):
+    # grades = Grade.objects.all().order_by('id_grade')
+    # return render(request, 'grade/listar_grades.html', {'grades': grades})
+
+    genes = Gene.objects.all()
+    turmas = []
+    resultado = []
+    grades = []
+
+    for g in genes:
+        resultado.append(g.cd_turma_id)
+        turmas = list(unique_everseen(resultado))
+
+    for t in turmas:
+        grades.append(Grade.objects.get(cd_turma_id=t))
+    return render(request, 'grade/listar_grades.html', {'grades': grades})
+
+@login_required(login_url='/contas/login')
+def mostrar_grade(request, id_turma):
+    grade = Gene.objects.filter(cd_turma_id=id_turma)
+    geracao = Grade.objects.get(cd_turma_id=id_turma)
+    return render(request, 'grade/gerar_grade.html', {'resultado': grade, 'geracao': geracao.cd_geracao})
+
+
+@login_required(login_url='/contas/login')
+def editar_grade(request, id_turma):
+    editar_grade = Gene.objects.filter(cd_turma_id=id_turma).first()
+    if request.method == 'POST':
+        form = GeneForm(request.POST, instance=editar_grade)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Grade alterada com sucesso!')
+            return redirect('gradehoraria:listar_grades')
+        else:
+            messages.error(request, 'Erro ao alterar os parâmetros')
+    else:
+        form = GeneForm(instance=editar_grade)
+        return render(request, 'grade/alterar_grade.html', {'form': form})
+
+
+@login_required(login_url='/contas/login')
+def deleta_grade(request, id_turma):
+    deleteGenes = Gene.objects.filter(cd_turma_id=id_turma).delete()
+    deleteGrade = Grade.objects.filter(cd_turma_id=id_turma).delete()
+    messages.warning(request, 'Grade excluída com sucesso!')
+    return redirect('gradehoraria:listar_grades')
+
+
 class Geneg():
     def __init__(self, professor, horario, sala, oferta=0):
         self.professor = professor
@@ -432,10 +483,10 @@ class Individuo():
         #     professor = random.choice(Professor.objects.filter(disciplinas=j.disciplina_id))
         #     self.cromossomo.append(Geneg(professor, random.choice(horarios), random.choice(salas)))
 
-        for j in self.ofertas:
+        for j in range(len(self.ofertas)):
             try:
-                professor = random.choice(Professor.objects.filter(disciplinas=j.disciplina_id))
-                self.cromossomo.append(Geneg(professor, random.choice(horarios), random.choice(salas)))
+                professor = random.choice(Professor.objects.filter(disciplinas=self.ofertas[j].disciplina_id))
+                self.cromossomo.append(Geneg(professor, horarios[j], random.choice(salas)))
 
             # except UnboundLocalError as ue:
             #     print("")
@@ -524,10 +575,10 @@ class AlgoritmoGenetico():
         nota = 0
         for p in populacao:
             for i, j in itertools.combinations(p.cromossomo, 2):
-                if i.horario == j.horario and i.professor == j.professor:
+                if i.horario == j.horario:
                     nota += 10
-                if i.sala == j.sala and i.horario == j.horario:
-                    nota += 10
+                # if i.sala == j.sala and i.horario == j.horario:
+                #     nota += 10
             p.notaAvaliacao = nota
 
     def avaliacaoMelhorSolucao(self, cromossomo):
@@ -551,7 +602,7 @@ class AlgoritmoGenetico():
                                 key=lambda populacao: populacao.notaAvaliacao,
                                 reverse=False)
 
-    def     melhorIndividuo(self, individuo):
+    def melhorIndividuo(self, individuo):
         if individuo.notaAvaliacao < self.melhorSolucao.notaAvaliacao:
             self.melhorSolucao = individuo
 
@@ -599,7 +650,6 @@ class AlgoritmoGenetico():
                            self.cromossomoMelhorSolucao,))
                     return self.cromossomoMelhorSolucao, self.geracaoFinal+1
 
-
 # FIXME: Criar exception para quando o tamanho do cromossomo for superior a quantidade de aulas na semana
 # FIXME: Carregar o tamanho do cromossomo da base de dados.
 @login_required(login_url='/contas/login')
@@ -609,49 +659,46 @@ def gerarGradeHoraria(request):
         turma = Turma.objects.get(id_turma=parametros.paramTurma_id)
         ofertas = Oferta.objects.filter(turma_id=parametros.paramTurma_id).count()
 
-        if ofertas > 12:
+        if Gene.objects.filter(cd_turma_id=parametros.paramTurma_id).exists():
+            messages.error(request, "Já existe grade horária para esta turma - %s" % turma.ds_turma)
+            return redirect('gradehoraria:listar_grades')
+        elif ofertas > 12:
             messages.error(request, "Existem %s ofertas cadastrada para essa turma. Limite máximo 12 ofertas" %ofertas, turma.ds_turma)
             return redirect('gradehoraria:listar_ofertas', turma.id_turma)
+        elif Sala.objects.all().count() < 2:
+            messages.error(request, "É necessário pelo menos duas salas para gerar a grade")
+            return redirect('gradehoraria:listar_salas')
+
         ag = AlgoritmoGenetico(parametros)
         resultado = ag.resolver(parametros.numeroGeracoes, parametros.taxaMutacao)
 
-        # gene = Gene.objects.select_related('cd_professor').select_related('cd_horario').select_related('cd_sala')
-        #professor = random.choices(Professor.objects.prefetch_related('disciplinas').filter(disciplinas=7))
 
-        '''for gene in resultado[0]:
-            g = Gene.objects.create(cd_professor_id=gene.professor,
-                                    cd_horario_id=gene.horario,
-                                    cd_sala_id=gene.sala,
-                                    oferta_id=Oferta.objects.select_related('disciplina').prefetch_related('disciplina').get(turma_id=parametros.paramTurma_id))
-
-            g.save'''
-
-        for gene in resultado[0]:
-            g = Gene.objects.create(cd_professor_id=gene.professor.id_professor,
-                                    cd_horario_id=gene.horario.id_horario,
-                                    cd_sala_id=gene.sala.id_sala,
-                                    oferta_id=gene.oferta.id_oferta)
-
-            g.save
+        for r in resultado[0]:
+            g = Gene(
+                     cd_professor_id=r.professor.id_professor,
+                     cd_horario_id=r.horario.id_horario,
+                     cd_sala_id=r.sala.id_sala,
+                     cd_oferta_id=r.oferta.id_oferta,
+                     cd_turma_id=r.oferta.turma.id_turma
+                     # cd_geracao=resultado[1]
+            )
+            g.save(force_insert=True)
+        grade = Grade(
+                      cd_turma_id=parametros.paramTurma_id,
+                      cd_geracao=resultado[1]
+                )
+        grade.save()
 
         return render(request, 'grade/gerar_grade.html', {'resultado': resultado[0], 'geracao': resultado[1]})
     except UnboundLocalError:
         messages.error(request, "Não existe ofertas cadastrada para a turma - %s" %turma.ds_turma)
         return redirect('gradehoraria:listar_parametros')
-    # except TypeError:
-    #     messages.error(request, "Não foi encontrado uma solução para o problema. Mude os parâmetros ou gere a grade novamente.")
-    #     return redirect('gradehoraria:listar_parametros')
+    except TypeError as tp:
+        # if resultado[0] is None:
+        messages.error(request, "Não foi encontrado uma solução para o problema. Mude os parâmetros ou gere a grade novamente.")
+        # return redirect('gradehoraria:listar_parametros')
+        # messages.error(request, tp.with_traceback())
+        return redirect('gradehoraria:listar_parametros')
     except Exception as e:
         messages.error(request, e.with_traceback())
         return redirect('gradehoraria:listar_parametros')
-
-
-# def salvarGradeHoraria(resultado):
-#
-#     for gene in resultado:
-#         g = Gene.objects.create(cd_professor_id=gene.professor,
-#                                 cd_horario_id=gene.horario,
-#                                 cd_sala_id=gene.sala,
-#                                 oferta_id=Oferta.oferta.id_oferta)
-#
-#         g.save

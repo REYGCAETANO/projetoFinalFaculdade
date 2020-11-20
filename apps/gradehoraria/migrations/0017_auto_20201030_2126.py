@@ -10,21 +10,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='horario',
-            name='turno',
-            field=models.IntegerField(choices=[(1, 'Matutino'), (2, 'Vespertino'), (3, 'Noturno')], verbose_name='Turno'),
-        ),
-        migrations.AlterUniqueTogether(
-            name='horario',
-            unique_together=set(),
-        ),
-        migrations.RemoveField(
-            model_name='horario',
-            name='dia_semana',
-        ),
-        migrations.RemoveField(
-            model_name='horario',
-            name='horario',
-        ),
+
     ]

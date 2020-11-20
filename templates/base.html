@@ -44,6 +44,7 @@
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% if user.is_authenticated %}{{ user.username|default:user.get_full_name }}{% endif %}</a>
                 <div class="dropdown-menu" aria-labelledby="dropdown01">
+                  <a class="dropdown-item" href="{% url 'gradehoraria:listar_grades' %}">Grades Geradas</a>
                   <a class="dropdown-item" href="{% url 'contas:novo_usuario' %}">Cadastrar novo usuário</a>
                   <a class="dropdown-item" href="{% url 'contas:alterar_senha' %}">Alterar a senha</a>
                   <!--<a class="dropdown-item" href="">Editar Cadastro</a> -->

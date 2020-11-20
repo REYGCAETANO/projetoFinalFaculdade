@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <div class="container">
+        <h1>Grades Geradas</h1>
+        {% include 'partials/messages.html' %}
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Professor</th>
+                            <th>Sala</th>
+                            <th>Oferta</th>
+                            <th>Turma</th>
+                            <th>Disciplina</th>
+                            <th scope="col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for g in grades %}
+                            <tr>
+                                <td>{{ g.gene_id }}</td>
+                                <td>{{ g.cd_professor.nm_professor }}</td>
+                                <td>{{ g.cd_sala.ds_sala }}</td>
+                                <td>{{ g.cd_oferta }}</td>
+                                <td>{{ g.cd_gene }}</td>
+                                <td>{{ g.cd_oferta.disciplina }}</td>
+                                <td>
+                                    <a href="" class="btn btn-info btn-sm">Editar</a>
+                                    <a href="" class="btn btn-danger btn-sm confirm-delete" data-toggle="modal", data-target="#confirmDeleteModal" id="delete-{{ p.id_disciplina }}">Excluir</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{% url 'gradehoraria:adicionar_disciplina' %}" class="btn btn-primary" role="button">Adicionar Disciplina</a>
+            </div>
+        </div>
+        {% include 'partials/confirm_delete_modal.html' %}
+    </div>
+{% endblock body %}

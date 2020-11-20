@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class Disciplina(models.Model):
@@ -62,11 +63,19 @@ class Horario(models.Model):
         (4, '4 - Horário'),
         (5, '5 - Horário'),
         (6, '6 - Horário'),
+        (7, '7 - Horário'),
+        (8, '8 - Horário'),
+        (9, '9 - Horário'),
+        (10, '10 - Horário'),
+        (11, '11 - Horário'),
+        (12, '12 - Horário'),
     )
     id_horario = models.AutoField(primary_key=True)
     horario = models.IntegerField(verbose_name='Horário', choices=HORARIO_CHOICES)
-    #def __str__(self):
-     #   return self.get_dia_semana_display()
+
+    def __str__(self):
+        horario = str(self.get_horario_display())
+        return horario
 
 
 class Sala(models.Model):
@@ -133,26 +142,29 @@ class Oferta(models.Model):
     disciplina = models.ForeignKey(Disciplina, on_delete=models.CASCADE, verbose_name='Disciplina')
 
     def __str__(self):
-        return self.turma.ds_turma
+        return self.disciplina.sigla_disciplina
 
     class Meta:
         unique_together = ['curso', 'turma', 'disciplina']
 
 
 class Gene(models.Model):
-    id_gene = models.AutoField(primary_key=True)
-    cd_professor = models.ForeignKey(Professor, on_delete=models.CASCADE, verbose_name='cd_professor')
-    cd_horario = models.ForeignKey(Horario, on_delete=models.CASCADE, verbose_name='cd_horario')
-    cd_sala = models.ForeignKey(Sala, on_delete=models.CASCADE, verbose_name='cd_sala')
-    oferta = models.OneToOneField(Oferta, on_delete=models.CASCADE, verbose_name='cd_gene')
+    gene_id = models.AutoField(primary_key=True)
+    cd_turma = models.ForeignKey(Turma, on_delete=models.CASCADE, verbose_name='Turma')
+    cd_professor = models.ForeignKey(Professor, on_delete=models.CASCADE, verbose_name='Professor')
+    cd_horario = models.ForeignKey(Horario, on_delete=models.CASCADE, verbose_name='Horário')
+    cd_sala = models.ForeignKey(Sala, on_delete=models.CASCADE, verbose_name='Sala')
+    cd_oferta = models.OneToOneField(Oferta, on_delete=models.CASCADE, verbose_name='Oferta')
+    # cd_geracao = models.IntegerField(verbose_name='Geração')
 
     class Meta:
-        unique_together = ['cd_professor', 'cd_horario', 'cd_sala', 'oferta']
+        unique_together = ['cd_turma', 'cd_professor', 'cd_horario', 'cd_sala', 'cd_oferta']
 
 class Grade(models.Model):
     id_grade = models.AutoField(primary_key=True)
-    cd_gene = models.ForeignKey(Gene, on_delete=models.CASCADE, verbose_name='Gene')
-
+    cd_turma = models.ForeignKey(Turma, on_delete=models.CASCADE, verbose_name='Turma')
+    cd_geracao = models.IntegerField(verbose_name='Geração')
+    # data_criacao = models.DateTimeField(default=timezone.now)
 
 class ParametrosGrade(models.Model):
     id_parametro = models.AutoField(primary_key=True)

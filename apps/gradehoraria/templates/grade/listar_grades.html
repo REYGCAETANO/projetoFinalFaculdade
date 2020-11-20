@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <div class="container">
+        <h1>Grades Geradas</h1>
+        {% include 'partials/messages.html' %}
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Turma</th>
+                            <th scope="col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for g in grades %}
+                            <tr>
+                                <td>{{ g.id_grade }}</td>
+                                <td>{{ g.cd_turma.ds_turma }}</td>
+                                <td>
+                                    <a href="{% url 'gradehoraria:mostrar_grade' g.cd_turma_id %}" class="btn btn-secondary btn-sm">Grade</a>
+                                    <a href="{% url 'gradehoraria:editar_grade' g.cd_turma.id_turma %}" class="btn btn-info btn-sm">Editar</a>
+                                    <a href="{% url 'gradehoraria:deleta_grade' g.cd_turma_id %}" class="btn btn-danger btn-sm confirm-delete" data-toggle="modal", data-target="#confirmDeleteModal" id="delete-{{ p.id_disciplina }}">Excluir</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% include 'partials/confirm_delete_modal.html' %}
+    </div>
+{% endblock body %}
