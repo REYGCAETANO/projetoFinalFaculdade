@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
+from django.db import transaction
 from more_itertools import unique_everseen
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
@@ -466,7 +467,6 @@ class Geneg():
 
 
 class Individuo():
-
     def __init__(self, geracao=0):
         self.parametros = ParametrosGrade.objects.get(pk=1)
         self.ofertas = Oferta.objects.filter(turma_id=self.parametros.paramTurma_id).order_by('id_oferta')
@@ -476,23 +476,15 @@ class Individuo():
         self.cromossomo = []
         self.melhorCromossomo = []
 
-        horarios = Horario.objects.all()
-        salas = Sala.objects.all()
-        #def
-        # for j in self.ofertas:
-        #     professor = random.choice(Professor.objects.filter(disciplinas=j.disciplina_id))
-        #     self.cromossomo.append(Geneg(professor, random.choice(horarios), random.choice(salas)))
+        self.horarios = Horario.objects.all()
+        self.salas = Sala.objects.all()
 
         for j in range(len(self.ofertas)):
             try:
                 professor = random.choice(Professor.objects.filter(disciplinas=self.ofertas[j].disciplina_id))
-                self.cromossomo.append(Geneg(self.ofertas[j], professor, random.choice(horarios), random.choice(salas)))
-
-            # except UnboundLocalError as ue:
-            #     print("")
-
+                self.cromossomo.append(Geneg(self.ofertas[j], professor, random.choice(self.horarios), random.choice(self.salas)))
             except Exception as e:
-                print(" Professor: %s Disciplina: %s"% (professor.nm_professor, j.disciplina_id))
+                print(" Professor: %s Disciplina: %s" %(professor.nm_professor, j.disciplina_id))
 
     def validacaoParametros(self):
 
@@ -500,45 +492,12 @@ class Individuo():
             return "Nenhuma oferta foi cadastrada para essa turma"
 
 
-    def cromossomoMelhorSolucao (self, cromossomo):
-        for g in cromossomo:
-            disciplinas = random.choice(Disciplina.objects.filter(professor_disciplina__id_professor=g.professor.id_professor))
-
-            try:
-                ofertaFinal = self.ofertas.get(disciplina_id=disciplinas.id_disciplina)
-                self.melhorCromossomo.append(Geneg(g.professor, g.horario, g.sala, ofertaFinal))
-
-            except Oferta.DoesNotExist:
-                continue
-            # for d in Disciplina.objects.filter(professor_disciplina__id_professor=g.professor.id_professor):
-            #     try:
-            #         ofertaFinal = self.ofertas.get(disciplina_id=d.id_disciplina)
-            #         self.melhorCromossomo.append(Geneg(g.professor, g.horario, g.sala, ofertaFinal))
-            #
-            #     except Oferta.DoesNotExist:
-            #         continue
-        return self.melhorCromossomo
-
-            # professores = Professor.objects.prefetch_related('disciplinas').filter(id_professor=g.professor.id_professor)
-            # ofertaFinaTeste = self.ofertas.get(disciplina_id=6)
-            # self.cromossomo.append(Geneg(j.professor, j.horario, j.sala, ofertaFinal))
-
-    # def avaliacao(self):
-    #     nota = 0
-    #     for i, j in itertools.combinations(self.cromossomo, 2):
-    #         if i.horario == j.horario and i.professor == j.professor:
-    #             nota += 10
-    #         if i.sala == j.sala and i.horario == j.horario:
-    #             nota += 10
-    #     self.notaAvaliacao = nota
-
     def crossover(self, other):
         corte = random.randint(0, self.tamanhoCromossomo)
         cromossomo1 = []
         cromossomo2 = []
 
         for cs in range(len(self.cromossomo)):
-            # for j in range(len(self.ofertas)):
             if cs < corte:
                 cromossomo1.append(Geneg(self.cromossomo[cs].oferta, self.cromossomo[cs].professor, self.cromossomo[cs].horario, self.cromossomo[cs].sala))
                 cromossomo2.append(Geneg(other.cromossomo[cs].oferta, other.cromossomo[cs].professor, other.cromossomo[cs].horario, other.cromossomo[cs].sala))
@@ -553,15 +512,34 @@ class Individuo():
         return [filho1, filho2]
 
     def mutacao(self, cromossomo, taxaMutacao):
-        for i in range(self.tamanhoCromossomo):
-            if random.random() < taxaMutacao:
-                pos1 = round(random.random() * self.tamanhoCromossomo - 1)
-                pos2 = round(random.random() * self.tamanhoCromossomo - 1)
-                val1 = cromossomo[pos1]
-                val2 = cromossomo[pos2]
-                cromossomo[pos1] = val2
-                cromossomo[pos2] = val1
-        return self
+        try:
+            for i in range(self.tamanhoCromossomo):
+                mut = random.random()
+                if mut < taxaMutacao:
+                    pos1 = round(random.random() * self.tamanhoCromossomo - 1)
+                    pos2 = round(random.random() * self.tamanhoCromossomo - 1)
+                    if mut < 0.2:
+                        cromossomo[pos1].sala = random.choice(self.salas)
+                        cromossomo[pos2].sala = random.choice(self.salas)
+                        cromossomo[pos1] = Geneg(cromossomo[pos1].oferta, cromossomo[pos1].professor, cromossomo[pos1].horario, cromossomo[pos1].sala)
+                        cromossomo[pos2] = Geneg(cromossomo[pos2].oferta, cromossomo[pos2].professor, cromossomo[pos2].horario, cromossomo[pos2].sala)
+                    elif(mut > 0.2 and mut < 0.5):
+                        cromossomo[pos1].horario = random.choice(self.horarios)
+                        cromossomo[pos2].horario = random.choice(self.horarios)
+                        cromossomo[pos1] = Geneg(cromossomo[pos1].oferta, cromossomo[pos1].professor, cromossomo[pos1].horario, cromossomo[pos1].sala)
+                        cromossomo[pos2] = Geneg(cromossomo[pos2].oferta, cromossomo[pos2].professor, cromossomo[pos2].horario, cromossomo[pos2].sala)
+                    else:
+                        # oferta1 = cromossomo[pos1].oferta.id_oferta.disciplina_id
+                        # oferta2 = self.ofertas[cromossomo[pos2].oferta.id_oferta].disciplina_id
+                        cromossomo[pos1].professor = random.choice(Professor.objects.filter(disciplinas=cromossomo[pos1].oferta.disciplina_id))
+                        cromossomo[pos2].professor = random.choice(Professor.objects.filter(disciplinas=cromossomo[pos2].oferta.disciplina_id))
+                        # val1.append(self.cromossomo[pos2].oferta, self.cromossomo[pos1].professor, self.cromossomo[pos1].horario, self.cromossomo[pos1].sala)
+                        # val2.append(self.cromossomo[pos1].oferta, self.cromossomo[pos2].professor, self.cromossomo[pos2].horario, self.cromossomo[pos2].sala)
+                        cromossomo[pos1] = Geneg(cromossomo[pos1].oferta, cromossomo[pos1].professor, cromossomo[pos1].horario, cromossomo[pos1].sala)
+                        cromossomo[pos2] = Geneg(cromossomo[pos2].oferta, cromossomo[pos2].professor, cromossomo[pos2].horario, cromossomo[pos2].sala)
+                return self
+        except Exception as e:
+            print(e)
 
 class AlgoritmoGenetico():
 
@@ -585,27 +563,11 @@ class AlgoritmoGenetico():
         nota = 0
         for p in populacao:
             for i, j in itertools.combinations(p.cromossomo, 2):
-                if i.horario == j.horario:
+                if i.sala != j.sala and i.horario == j.horario:
                     nota += 10
                 if i.sala == j.sala and i.horario == j.horario:
                     nota += 10
             p.notaAvaliacao = nota
-
-    # def avaliacaoMelhorSolucao(self, cromossomo):
-    #     nota = 0
-    #     ofertas = []
-    #
-    #     try:
-    #         for g in cromossomo:
-    #             ofertas.append(g.oferta.id_oferta)
-    #             resultado = list(unique_everseen(ofertas))
-    #         if self.ofertas.count() != len(resultado):
-    #             nota += 100
-    #         return nota
-    #
-    #     except UnboundLocalError as ue:
-    #         print("Não existe ofertas cadastrada para essa turma %s" %self.parametros.paramTurma_id)
-    #         raise
 
     def ordenaPopulacao(self):
         self.populacao = sorted(self.populacao,
@@ -631,6 +593,12 @@ class AlgoritmoGenetico():
         Individuo().validacaoParametros()
         self.avaliacao(self.populacao)
         self.ordenaPopulacao()
+        if self.melhorSolucao.notaAvaliacao == 0:
+            print("Melhor Solução -> G: %s \nNota: %s \nCromossomo: %s " %
+                  (self.melhorSolucao.geracao,
+                   self.melhorSolucao.notaAvaliacao,
+                   self.melhorSolucao.cromossomo,))
+            return self.melhorSolucao.cromossomo, self.melhorSolucao.geracao
 
         for geracao in range(numeroGeracoes):
             pop_temp = self.selecionaPai(self.populacao)
@@ -650,8 +618,6 @@ class AlgoritmoGenetico():
             self.visualizaGeracao()
             self.melhorIndividuo(self.populacao[0])
             if self.melhorSolucao.notaAvaliacao == 0:
-                # self.cromossomoMelhorSolucao = Individuo().cromossomoMelhorSolucao(self.melhorSolucao.cromossomo)
-                # if self.avaliacaoMelhorSolucao(self.cromossomoMelhorSolucao) == 0:
                 print("Melhor Solução -> G: %s \nNota: %s \nCromossomo: %s " %
                        (self.melhorSolucao.geracao,
                        self.melhorSolucao.notaAvaliacao,
@@ -661,6 +627,7 @@ class AlgoritmoGenetico():
 # FIXME: Criar exception para quando o tamanho do cromossomo for superior a quantidade de aulas na semana
 # FIXME: Carregar o tamanho do cromossomo da base de dados.
 @login_required(login_url='/contas/login')
+@transaction.atomic
 def gerarGradeHoraria(request):
     try:
         parametros = ParametrosGrade.objects.get(pk=1)
@@ -680,17 +647,17 @@ def gerarGradeHoraria(request):
         ag = AlgoritmoGenetico(parametros)
         resultado = ag.resolver(parametros.numeroGeracoes, parametros.taxaMutacao)
 
+        for r in resultado[0]:
+                g = Gene(
+                         cd_professor_id=r.professor.id_professor,
+                         cd_horario_id=r.horario.id_horario,
+                         cd_sala_id=r.sala.id_sala,
+                         cd_oferta_id=r.oferta.id_oferta,
+                         cd_turma_id=r.oferta.turma.id_turma
+                         # cd_geracao=resultado[1]
+                )
+        g.save(force_insert=True)
 
-        for r in sorted(resultado[0]):
-            g = Gene(
-                     cd_professor_id=r.professor.id_professor,
-                     cd_horario_id=r.horario.id_horario,
-                     cd_sala_id=r.sala.id_sala,
-                     cd_oferta_id=r.oferta.id_oferta,
-                     cd_turma_id=r.oferta.turma.id_turma
-                     # cd_geracao=resultado[1]
-            )
-            g.save(force_insert=True)
         grade = Grade(
                       cd_turma_id=parametros.paramTurma_id,
                       cd_geracao=resultado[1]
