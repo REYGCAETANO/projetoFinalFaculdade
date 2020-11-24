@@ -32,18 +32,31 @@
 			<tr>
                 <th scope="row">1</th>
                 {% for field in resultado %}
-                    <td>
-                        Sala: {{ field.sala }} {{ field.cd_sala.ds_sala }} <br/>
-                        Turma: {{ field.oferta.turma.ds_turma}} {{field.cd_turma.ds_turma}}<br/>
-                        Professor: {{ field.professor }} {{field.cd_professor.nm_professor}} <br/>
-                        Oferta: {{ field.oferta.id_oferta }} {{field.cd_oferta_id}}<br/>
-                        Disciplina: {{ field.oferta.disciplina.sigla_disciplina }} {{field.cd_oferta.disciplina.sigla_disciplina}}
-                    </td>
-
-                    {%if forloop.counter == 6%}
-                        <tr/>
-                        <tr>
-                        <th scope="row">2</th>
+                    {% if field.cd_horario_id == forloop.counter %}
+                        <td>
+                            Sala: {{ field.sala }} {{ field.cd_sala.ds_sala }} <br/>
+                            Turma: {{ field.oferta.turma.ds_turma}} {{field.cd_turma.ds_turma}}<br/>
+                            Professor: {{ field.professor }} {{field.cd_professor.nm_professor}} <br/>
+                            Oferta: {{ field.oferta.id_oferta }} {{field.cd_oferta_id}}<br/>
+                            Disciplina: {{ field.oferta.disciplina.sigla_disciplina }} {{field.cd_oferta.disciplina.sigla_disciplina}}
+                        </td>
+                        {%if forloop.counter == 6%}
+                            <tr/>
+                            <tr>
+                            <th scope="row">2</th>
+                        {% endif %}
+                    {% elif field.cd_horario_id == forloop.counter %}
+                        <td>
+                            Sala: {{ field.sala }} {{ field.cd_sala.ds_sala }} <br/>
+                            Turma: {{ field.oferta.turma.ds_turma}} {{field.cd_turma.ds_turma}}<br/>
+                            Professor: {{ field.professor }} {{field.cd_professor.nm_professor}} <br/>
+                            Oferta: {{ field.oferta.id_oferta }} {{field.cd_oferta_id}}<br/>
+                            Disciplina: {{ field.oferta.disciplina.sigla_disciplina }} {{field.cd_oferta.disciplina.sigla_disciplina}}
+                        </td>
+                    {% else %}
+                         <td>
+                           &nbsp;
+                        </td>
                     {% endif %}
                 {% endfor %}
             </tr>

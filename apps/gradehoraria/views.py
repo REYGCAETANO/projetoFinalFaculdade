@@ -428,7 +428,7 @@ def listar_grades(request):
 
 @login_required(login_url='/contas/login')
 def mostrar_grade(request, id_turma):
-    grade = Gene.objects.filter(cd_turma_id=id_turma)
+    grade = Gene.objects.filter(cd_turma_id=id_turma).order_by('cd_horario_id')
     geracao = Grade.objects.get(cd_turma_id=id_turma)
     return render(request, 'grade/gerar_grade.html', {'resultado': grade, 'geracao': geracao.cd_geracao})
 
@@ -458,7 +458,7 @@ def deleta_grade(request, id_turma):
 
 
 class Geneg():
-    def __init__(self, professor, horario, sala, oferta=0):
+    def __init__(self, oferta, professor, horario, sala):
         self.professor = professor
         self.horario = horario
         self.sala = sala
@@ -486,7 +486,7 @@ class Individuo():
         for j in range(len(self.ofertas)):
             try:
                 professor = random.choice(Professor.objects.filter(disciplinas=self.ofertas[j].disciplina_id))
-                self.cromossomo.append(Geneg(professor, horarios[j], random.choice(salas)))
+                self.cromossomo.append(Geneg(self.ofertas[j], professor, random.choice(horarios), random.choice(salas)))
 
             # except UnboundLocalError as ue:
             #     print("")
@@ -534,8 +534,18 @@ class Individuo():
 
     def crossover(self, other):
         corte = random.randint(0, self.tamanhoCromossomo)
-        cromossomo1 = self.cromossomo[0:corte] + other.cromossomo[corte::]
-        cromossomo2 = other.cromossomo[0:corte] + self.cromossomo[corte::]
+        cromossomo1 = []
+        cromossomo2 = []
+
+        for cs in range(len(self.cromossomo)):
+            # for j in range(len(self.ofertas)):
+            if cs < corte:
+                cromossomo1.append(Geneg(self.cromossomo[cs].oferta, self.cromossomo[cs].professor, self.cromossomo[cs].horario, self.cromossomo[cs].sala))
+                cromossomo2.append(Geneg(other.cromossomo[cs].oferta, other.cromossomo[cs].professor, other.cromossomo[cs].horario, other.cromossomo[cs].sala))
+            else:
+                cromossomo1.append(Geneg(other.cromossomo[cs].oferta, other.cromossomo[cs].professor, other.cromossomo[cs].horario, other.cromossomo[cs].sala))
+                cromossomo2.append(Geneg(self.cromossomo[cs].oferta, self.cromossomo[cs].professor, self.cromossomo[cs].horario, self.cromossomo[cs].sala))
+
         filho1 = Individuo(self.geracao + 1)
         filho1.cromossomo = cromossomo1
         filho2 = Individuo(self.geracao + 1)
@@ -577,25 +587,25 @@ class AlgoritmoGenetico():
             for i, j in itertools.combinations(p.cromossomo, 2):
                 if i.horario == j.horario:
                     nota += 10
-                # if i.sala == j.sala and i.horario == j.horario:
-                #     nota += 10
+                if i.sala == j.sala and i.horario == j.horario:
+                    nota += 10
             p.notaAvaliacao = nota
 
-    def avaliacaoMelhorSolucao(self, cromossomo):
-        nota = 0
-        ofertas = []
-
-        try:
-            for g in cromossomo:
-                ofertas.append(g.oferta.id_oferta)
-                resultado = list(unique_everseen(ofertas))
-            if self.ofertas.count() != len(resultado):
-                nota += 100
-            return nota
-
-        except UnboundLocalError as ue:
-            print("Não existe ofertas cadastrada para essa turma %s" %self.parametros.paramTurma_id)
-            raise
+    # def avaliacaoMelhorSolucao(self, cromossomo):
+    #     nota = 0
+    #     ofertas = []
+    #
+    #     try:
+    #         for g in cromossomo:
+    #             ofertas.append(g.oferta.id_oferta)
+    #             resultado = list(unique_everseen(ofertas))
+    #         if self.ofertas.count() != len(resultado):
+    #             nota += 100
+    #         return nota
+    #
+    #     except UnboundLocalError as ue:
+    #         print("Não existe ofertas cadastrada para essa turma %s" %self.parametros.paramTurma_id)
+    #         raise
 
     def ordenaPopulacao(self):
         self.populacao = sorted(self.populacao,
@@ -640,15 +650,13 @@ class AlgoritmoGenetico():
             self.visualizaGeracao()
             self.melhorIndividuo(self.populacao[0])
             if self.melhorSolucao.notaAvaliacao == 0:
-                self.cromossomoMelhorSolucao = Individuo().cromossomoMelhorSolucao(self.melhorSolucao.cromossomo)
-                if self.avaliacaoMelhorSolucao(self.cromossomoMelhorSolucao) == 0:
-                    print("Melhor Solução -> G: %s \nNota: %s \nCromossomo: %s \ncromossomoMelhorSolucao: %s" %
-                          # (self.melhorSolucao.geracao,
-                          (self.geracaoFinal,
-                           self.melhorSolucao.notaAvaliacao,
-                           self.melhorSolucao.cromossomo,
-                           self.cromossomoMelhorSolucao,))
-                    return self.cromossomoMelhorSolucao, self.geracaoFinal+1
+                # self.cromossomoMelhorSolucao = Individuo().cromossomoMelhorSolucao(self.melhorSolucao.cromossomo)
+                # if self.avaliacaoMelhorSolucao(self.cromossomoMelhorSolucao) == 0:
+                print("Melhor Solução -> G: %s \nNota: %s \nCromossomo: %s " %
+                       (self.melhorSolucao.geracao,
+                       self.melhorSolucao.notaAvaliacao,
+                       self.melhorSolucao.cromossomo,))
+                return self.melhorSolucao.cromossomo, self.melhorSolucao.geracao
 
 # FIXME: Criar exception para quando o tamanho do cromossomo for superior a quantidade de aulas na semana
 # FIXME: Carregar o tamanho do cromossomo da base de dados.
@@ -673,7 +681,7 @@ def gerarGradeHoraria(request):
         resultado = ag.resolver(parametros.numeroGeracoes, parametros.taxaMutacao)
 
 
-        for r in resultado[0]:
+        for r in sorted(resultado[0]):
             g = Gene(
                      cd_professor_id=r.professor.id_professor,
                      cd_horario_id=r.horario.id_horario,
