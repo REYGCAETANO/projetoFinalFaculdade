@@ -3,8 +3,6 @@ backports.shutil-get-terminal-size==1.0.0
 bkcharts==0.2
 chardet==3.0.4
 cycler==0.10.0
-et-xmlfile==1.0.1
-navigator-updater==0.2.1
 odo==0.5.1
 pep8==1.7.1
 pycosat==0.6.3
