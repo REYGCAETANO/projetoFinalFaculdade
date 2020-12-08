@@ -1,7 +1,5 @@
 backports.os==0.1.1
 backports.shutil-get-terminal-size==1.0.0
-bkcharts==0.2
-chardet==3.0.4
 odo==0.5.1
 pep8==1.7.1
 pycosat==0.6.3
