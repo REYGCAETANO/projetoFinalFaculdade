@@ -44,7 +44,7 @@ urlpatterns = [
     path('grade/listar_grades/', views.listar_grades, name='listar_grades'),
     path('grade/editar/<int:id_turma>/', views.editar_grade, name='editar_grade'),
     path('grade/mostrar/<int:id_turma>/', views.mostrar_grade, name='mostrar_grade'),
-    path('grade/excluir/<int:id_turma>/', views.deleta_grade, name='deleta_grade'),
+    path('grade/excluir/<int:paramTurma_id>/', views.deleta_grade, name='deleta_grade'),
     # path('grade/salvarGrade/<List:resultado>/', views.salvarGradeHoraria, name='salvarGradeHoraria'),
 
     #path('', views.gradeHoraria, name='hello_world'),

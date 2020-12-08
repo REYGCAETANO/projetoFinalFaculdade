@@ -14,6 +14,7 @@
 <div class="container">
     <form class="form-signin" method="post">
         {% csrf_token %}
+        <img class="mb-4" src="{% static 'img/udf.png' %}" alt="" width="300" height="100">
         <h2 class="form-signin-heading">Por favor, faça login</h2>
         {% include 'partials/messages.html' %}
         <label for="username" class="sr-only">Usuário</label>
@@ -24,9 +25,9 @@
                required>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Entrar</button>
         <div class="row">
-            <!--<div class="col-md-12 text-right">
-                <a href="">Esqueceu sua senha?</a>
-            </div>-->
+            <div class="col-md-12 text-right">
+                <a href="{% url 'reset_password' %}">Esqueceu sua senha?</a>
+            </div>
         </div>
     </form>
 </div>

@@ -5,7 +5,8 @@ from django.contrib.auth.forms import (PasswordChangeForm, PasswordResetForm, Se
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.contrib.auth.models import User
-
+from django.contrib.auth.forms import (PasswordChangeForm, PasswordResetForm, SetPasswordForm)
+from .models import PasswordReset
 from .forms import NovoUsuarioForm
 
 

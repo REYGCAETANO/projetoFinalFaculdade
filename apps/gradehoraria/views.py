@@ -451,9 +451,9 @@ def editar_grade(request, id_turma):
 
 
 @login_required(login_url='/contas/login')
-def deleta_grade(request, id_turma):
-    deleteGenes = Gene.objects.filter(cd_turma_id=id_turma).delete()
-    deleteGrade = Grade.objects.filter(cd_turma_id=id_turma).delete()
+def deleta_grade(request, paramTurma_id):
+    deleteGenes = Gene.objects.filter(cd_turma_id=paramTurma_id).delete()
+    deleteGrade = Grade.objects.filter(cd_turma_id=paramTurma_id).delete()
     messages.warning(request, 'Grade excluída com sucesso!')
     return redirect('gradehoraria:listar_grades')
 
@@ -565,7 +565,7 @@ class AlgoritmoGenetico():
             for i, j in itertools.combinations(p.cromossomo, 2):
                 if i.sala != j.sala and i.horario == j.horario:
                     nota += 10
-                if i.sala == j.sala and i.horario == j.horario:
+                if i.horario == j.horario:
                     nota += 10
             p.notaAvaliacao = nota
 
@@ -593,12 +593,7 @@ class AlgoritmoGenetico():
         Individuo().validacaoParametros()
         self.avaliacao(self.populacao)
         self.ordenaPopulacao()
-        if self.melhorSolucao.notaAvaliacao == 0:
-            print("Melhor Solução -> G: %s \nNota: %s \nCromossomo: %s " %
-                  (self.melhorSolucao.geracao,
-                   self.melhorSolucao.notaAvaliacao,
-                   self.melhorSolucao.cromossomo,))
-            return self.melhorSolucao.cromossomo, self.melhorSolucao.geracao
+        self.avaliacao(self.populacao)
 
         for geracao in range(numeroGeracoes):
             pop_temp = self.selecionaPai(self.populacao)
@@ -647,7 +642,8 @@ def gerarGradeHoraria(request):
         ag = AlgoritmoGenetico(parametros)
         resultado = ag.resolver(parametros.numeroGeracoes, parametros.taxaMutacao)
 
-        for r in resultado[0]:
+        try:
+            for r in resultado[0]:
                 g = Gene(
                          cd_professor_id=r.professor.id_professor,
                          cd_horario_id=r.horario.id_horario,
@@ -656,14 +652,15 @@ def gerarGradeHoraria(request):
                          cd_turma_id=r.oferta.turma.id_turma
                          # cd_geracao=resultado[1]
                 )
-        g.save(force_insert=True)
+                g.save(force_insert=True)
+        except Grade.DoesNotExist:
+            transaction.set_rollback(True)
 
         grade = Grade(
                       cd_turma_id=parametros.paramTurma_id,
                       cd_geracao=resultado[1]
                 )
         grade.save()
-
         return render(request, 'grade/gerar_grade.html', {'resultado': resultado[0], 'geracao': resultado[1]})
     except UnboundLocalError:
         messages.error(request, "Não existe ofertas cadastrada para a turma - %s" %turma.ds_turma)

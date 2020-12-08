@@ -2,7 +2,10 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
+from apps.gradehoraria.mail import send_mail_template
+from apps.gradehoraria.utils import generate_hash_key
 
+from .models import PasswordReset
 
 User = get_user_model()
 
