@@ -4,7 +4,6 @@ pycrypto==2.6.1
 python-decouple==3.3
 PyYAML==5.3.1
 ruamel-yaml==0.15.35
-simplegeneric==0.8.1
 tqdm @ file:///tmp/build/80754af9/tqdm_1605303662894/work
 unicodecsv==0.14.1
 webencodings==0.5.1
