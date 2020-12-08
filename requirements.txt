@@ -70,7 +70,6 @@ llvmlite==0.21.0
 locket==0.2.0
 lxml==4.1.1
 matplotlib==3.0.1
-mccabe==0.6.1
 menuinst==1.4.11
 mistune==0.8.3
 mkl-fft==1.0.6
