@@ -3,12 +3,3 @@ pycosat==0.6.3
 pycrypto==2.6.1
 python-decouple==3.3
 PyYAML==5.3.1
-ruamel-yaml==0.15.35
-tqdm @ file:///tmp/build/80754af9/tqdm_1605303662894/work
-unicodecsv==0.14.1
-webencodings==0.5.1
-whitenoise==5.2.0
-win-unicode-console==0.5
-wincertstore==0.2
-xlwt==1.3.0
-xmltodict==0.12.0
